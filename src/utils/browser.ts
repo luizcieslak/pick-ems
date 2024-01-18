@@ -1,9 +1,9 @@
-import { Browser, BrowserContext, chromium, Page, Locator } from "playwright";
-import { CONFIG } from "../config";
+import { Browser, BrowserContext, chromium, Page, Locator } from 'playwright'
+import { CONFIG } from '../config'
 
-let PAGE_SINGLETON: Page | null = null;
-let BROWSER_SINGLETON: Browser | null = null;
-let CONTEXT_SINGLETON: BrowserContext | null = null;
+let PAGE_SINGLETON: Page | null = null
+let BROWSER_SINGLETON: Browser | null = null
+let CONTEXT_SINGLETON: BrowserContext | null = null
 
 /**
  * Returns a shared browser instance.
@@ -17,22 +17,22 @@ let CONTEXT_SINGLETON: BrowserContext | null = null;
  * @returns {Promise<Page>}
  */
 export async function getBrowserInstance(): Promise<Page> {
-  if (PAGE_SINGLETON != null) {
-    return PAGE_SINGLETON;
-  }
+	if (PAGE_SINGLETON != null) {
+		return PAGE_SINGLETON
+	}
 
-  const browser = await chromium.launch({
-    headless: CONFIG.HEADLESS,
-    slowMo: 100,
-  });
-  const context = await browser.newContext();
-  const page = await context.newPage();
+	const browser = await chromium.launch({
+		headless: CONFIG.HEADLESS,
+		slowMo: 100,
+	})
+	const context = await browser.newContext()
+	const page = await context.newPage()
 
-  PAGE_SINGLETON = page;
-  BROWSER_SINGLETON = browser;
-  CONTEXT_SINGLETON = context;
+	PAGE_SINGLETON = page
+	BROWSER_SINGLETON = browser
+	CONTEXT_SINGLETON = context
 
-  return page;
+	return page
 }
 
 /**
@@ -41,21 +41,17 @@ export async function getBrowserInstance(): Promise<Page> {
  * @returns {Promise<void>}
  */
 export async function closeBrowser(): Promise<void> {
-  if (
-    PAGE_SINGLETON == null ||
-    BROWSER_SINGLETON == null ||
-    CONTEXT_SINGLETON == null
-  ) {
-    return;
-  }
+	if (PAGE_SINGLETON == null || BROWSER_SINGLETON == null || CONTEXT_SINGLETON == null) {
+		return
+	}
 
-  await PAGE_SINGLETON.close();
-  await CONTEXT_SINGLETON.close();
-  await BROWSER_SINGLETON.close();
+	await PAGE_SINGLETON.close()
+	await CONTEXT_SINGLETON.close()
+	await BROWSER_SINGLETON.close()
 
-  PAGE_SINGLETON = null;
-  BROWSER_SINGLETON = null;
-  CONTEXT_SINGLETON = null;
+	PAGE_SINGLETON = null
+	BROWSER_SINGLETON = null
+	CONTEXT_SINGLETON = null
 }
 
 /**
@@ -65,15 +61,12 @@ export async function closeBrowser(): Promise<void> {
  * @param waitForVisible The selector to wait for.
  * @returns {Promise<Locator>} The locator for the given selector.
  */
-export async function navigateTo(
-  url: string,
-  waitForVisible: string
-): Promise<Locator> {
-  const browser = await getBrowserInstance();
-  await browser.goto(url);
+export async function navigateTo(url: string, waitForVisible: string): Promise<Locator> {
+	const browser = await getBrowserInstance()
+	await browser.goto(url)
 
-  const container = browser.locator(waitForVisible);
-  await container.waitFor({ state: "visible" });
+	const container = browser.locator(waitForVisible)
+	await container.waitFor({ state: 'visible' })
 
-  return container;
+	return container
 }

@@ -1,8 +1,8 @@
-import type { Locator } from "playwright";
+import type { Locator } from 'playwright'
 
 async function getColspan(cell: Locator): Promise<number> {
-  const colspan = await cell.getAttribute("colspan");
-  return parseInt(colspan || "1");
+	const colspan = await cell.getAttribute('colspan')
+	return parseInt(colspan || '1')
 }
 
 /**
@@ -37,33 +37,33 @@ async function getColspan(cell: Locator): Promise<number> {
  * @returns {AsyncGenerator<Locator[]>} The flattened headers.
  */
 async function* flatten(levels: Locator[][]): AsyncGenerator<Locator[]> {
-  const [head, ...tail] = levels;
+	const [head, ...tail] = levels
 
-  // Levels are empty, so we're done.
-  if (head == null) {
-    return;
-  }
+	// Levels are empty, so we're done.
+	if (head == null) {
+		return
+	}
 
-  // There is only one level, so yield one singleton path per entry and return.
-  if (tail.length === 0) {
-    for (const h of head) {
-      yield [h];
-    }
-    return;
-  }
+	// There is only one level, so yield one singleton path per entry and return.
+	if (tail.length === 0) {
+		for (const h of head) {
+			yield [h]
+		}
+		return
+	}
 
-  // There are multiple levels, so flatten the children first
-  const children = flatten(tail);
+	// There are multiple levels, so flatten the children first
+	const children = flatten(tail)
 
-  // After the children are flattened, take each entry in the head and
-  // prepend it to each child, proportionally to the colspan of the head.
-  for (const h of head) {
-    const colspan = await getColspan(h);
-    for (let i = 0; i < colspan; i++) {
-      const child = await children.next();
-      yield [...head, ...child.value];
-    }
-  }
+	// After the children are flattened, take each entry in the head and
+	// prepend it to each child, proportionally to the colspan of the head.
+	for (const h of head) {
+		const colspan = await getColspan(h)
+		for (let i = 0; i < colspan; i++) {
+			const child = await children.next()
+			yield [...head, ...child.value]
+		}
+	}
 }
 
 /**
@@ -76,17 +76,17 @@ async function* flatten(levels: Locator[][]): AsyncGenerator<Locator[]> {
  * @returns {Promise<T[]>} The mapped headers.
  */
 export async function mapTableHeaders<T>(
-  table: Locator,
-  fn: (value: Locator[], index: number, array: Locator[][]) => Promise<T>
+	table: Locator,
+	fn: (value: Locator[], index: number, array: Locator[][]) => Promise<T>
 ): Promise<T[]> {
-  const trs = await table.locator("thead tr").all();
-  const ths = trs.map((row) => row.locator("th").all());
-  const headers: Locator[][] = await Promise.all(ths);
+	const trs = await table.locator('thead tr').all()
+	const ths = trs.map(row => row.locator('th').all())
+	const headers: Locator[][] = await Promise.all(ths)
 
-  const mapped: T[] = [];
-  for await (const h of flatten(headers)) {
-    mapped.push(await fn(h, mapped.length, headers));
-  }
+	const mapped: T[] = []
+	for await (const h of flatten(headers)) {
+		mapped.push(await fn(h, mapped.length, headers))
+	}
 
-  return mapped;
+	return mapped
 }

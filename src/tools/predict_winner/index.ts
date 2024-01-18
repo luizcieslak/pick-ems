@@ -1,1 +1,1 @@
-export { predictWinner } from "./tool";
+export { predictWinner } from './tool'

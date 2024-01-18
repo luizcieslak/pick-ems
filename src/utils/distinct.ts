@@ -5,5 +5,5 @@
  * @returns The distinct items from the input array.
  */
 export function distinct<T>(items: T[]): T[] {
-  return [...new Set(items)];
+	return [...new Set(items)]
 }

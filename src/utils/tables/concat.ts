@@ -1,4 +1,4 @@
-import { Table } from "./table";
+import { Table } from './table'
 /**
  * Merges two tables together by concatenating the headers and
  * each row in the body to create a new table.
@@ -43,23 +43,20 @@ import { Table } from "./table";
  * @param table2 The right side of the concatenation.
  * @returns {Table} The concatenated table.
  */
-export function concatTables<T, U>(
-  table1: Table<T>,
-  table2: Table<U>
-): Table<T | U> {
-  const headers = table1.headers.concat(table2.headers);
-  const body: (T | U)[][] = [];
+export function concatTables<T, U>(table1: Table<T>, table2: Table<U>): Table<T | U> {
+	const headers = table1.headers.concat(table2.headers)
+	const body: (T | U)[][] = []
 
-  if (table1.body.length !== table2.body.length) {
-    throw new Error("Tables must have the same number of rows");
-  }
+	if (table1.body.length !== table2.body.length) {
+		throw new Error('Tables must have the same number of rows')
+	}
 
-  for (let k = 0; k < table1.body.length; k++) {
-    const row1 = table1.body[k]!;
-    const row2 = table2.body[k]!;
-    const row = row1.concat(row2 as unknown as T[]) as (T | U)[];
-    body.push(row);
-  }
+	for (let k = 0; k < table1.body.length; k++) {
+		const row1 = table1.body[k]!
+		const row2 = table2.body[k]!
+		const row = row1.concat(row2 as unknown as T[]) as (T | U)[]
+		body.push(row)
+	}
 
-  return { headers, body };
+	return { headers, body }
 }

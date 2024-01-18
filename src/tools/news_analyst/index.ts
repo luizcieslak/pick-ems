@@ -1,1 +1,1 @@
-export { newsAnalyst, NewsAnalysis } from "./tool";
+export { newsAnalyst, NewsAnalysis } from './tool'

@@ -1,2 +1,2 @@
-export { Team } from "./entity";
-export { TeamRepo } from "./repo";
+export { Team } from './entity'
+export { TeamRepo } from './repo'

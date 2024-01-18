@@ -1,9 +1,9 @@
-import { llm } from "../../utils";
-import { SYSTEM_PROMPT } from "./prompt";
-import { SCHEMA } from "./schema";
-import { TeamRepo } from "../../repos/teams";
+import { llm } from '../../utils'
+import { SYSTEM_PROMPT } from './prompt'
+import { SCHEMA } from './schema'
+import { TeamRepo } from '../../repos/teams'
 
-export type NewsAnalysis = (typeof SCHEMA)["type"];
+export type NewsAnalysis = (typeof SCHEMA)['type']
 
 /**
  * Given an article, this analyzes the article to extract the
@@ -14,13 +14,10 @@ export type NewsAnalysis = (typeof SCHEMA)["type"];
  * @param content The content of the article.
  * @returns {Promise<NewsAnalysis>} The analysis of the article.
  */
-export async function newsAnalyst(
-  title: string,
-  content: string
-): Promise<NewsAnalysis> {
-  const article = `${title}\n===\n\n${content}`;
-  const teams = await new TeamRepo().list();
-  const prompt = SYSTEM_PROMPT(teams);
+export async function newsAnalyst(title: string, content: string): Promise<NewsAnalysis> {
+	const article = `${title}\n===\n\n${content}`
+	const teams = await new TeamRepo().list()
+	const prompt = SYSTEM_PROMPT(teams)
 
-  return llm(prompt, article, SCHEMA);
+	return llm(prompt, article, SCHEMA)
 }

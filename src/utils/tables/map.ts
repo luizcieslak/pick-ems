@@ -1,7 +1,7 @@
-import type { Locator } from "playwright";
-import type { Table } from "./table";
-import { mapTableHeaders } from "./header";
-import { mapTableBody } from "./body";
+import type { Locator } from 'playwright'
+import type { Table } from './table'
+import { mapTableHeaders } from './header'
+import { mapTableBody } from './body'
 
 /**
  * Takes two functions, one for the table headers and one for the table body,
@@ -20,15 +20,11 @@ import { mapTableBody } from "./body";
  * @returns {Promise<Table>} The mapped table.
  */
 export async function mapTable<T>(
-  table: Locator,
-  headFn: (
-    value: Locator[],
-    index: number,
-    array: Locator[][]
-  ) => Promise<string>,
-  bodyFn: (value: Locator, index: number, array: Locator[]) => Promise<T>
+	table: Locator,
+	headFn: (value: Locator[], index: number, array: Locator[][]) => Promise<string>,
+	bodyFn: (value: Locator, index: number, array: Locator[]) => Promise<T>
 ): Promise<Table<T>> {
-  const headers = await mapTableHeaders(table, headFn);
-  const body = await mapTableBody(table, bodyFn);
-  return { headers, body };
+	const headers = await mapTableHeaders(table, headFn)
+	const body = await mapTableBody(table, bodyFn)
+	return { headers, body }
 }
