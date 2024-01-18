@@ -36,10 +36,7 @@ export class Match {
 		const repo = new TeamStatsRepo()
 
 		const stats: { [key in TeamStatType]: TeamStats[] } = {
-			[TeamStatType.OFFENSE]: [],
-			[TeamStatType.DEFENSE]: [],
-			[TeamStatType.TURNOVER]: [],
-			[TeamStatType.SPECIAL]: [],
+			[TeamStatType.TEAM_STATS]: [],
 		}
 
 		for (const type of Object.values(TeamStatType)) {

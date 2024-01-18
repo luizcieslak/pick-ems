@@ -1,10 +1,9 @@
 import { Table } from '../../utils'
 
 export enum TeamStatType {
-	OFFENSE = 'Offense Stats',
-	DEFENSE = 'Defense Stats',
-	TURNOVER = 'Turnover Stats',
-	SPECIAL = 'Special Team Stats',
+	TEAM_STATS = 'Team Stats',
+	// TRY ADDING EVENT HISTORY: EXAMPLE: https://www.hltv.org/stats/teams/events/9565/vitality?startDate=2023-10-18&endDate=2024-01-18
+	// EVENT_HISTORY = 'Event History',
 }
 
 /**
@@ -21,11 +20,11 @@ export class TeamStats {
 	 */
 	constructor(public team: string, public type: TeamStatType, public stats: { [stat: string]: string }) {}
 
-	/**
-	 * Convert the stats to a table.
-	 *
-	 * @returns {Table} The stats as a table.
-	 */
+	// /**
+	//  * Convert the stats to a table.
+	//  *
+	//  * @returns {Table} The stats as a table.
+	//  */
 	public toTable(): Table {
 		const headers: string[] = ['Team']
 		const body: string[] = [this.team]
