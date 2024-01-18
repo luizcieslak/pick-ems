@@ -1,9 +1,9 @@
 import { Team } from './entity'
 import { navigateTo } from '../../utils'
 
-const URL = 'https://www.espn.com/nfl/teams'
-const WAIT_FOR = '#fittPageContainer'
-const SELECTOR = '.TeamLinks h2'
+const URL = 'https://www.hltv.org/stats/teams?startDate=2023-10-18&endDate=2024-01-18&rankingFilter=Top50'
+const WAIT_FOR = '.contentCol'
+const SELECTOR = 'td a'
 
 /**
  * A repository for retrieving the full set of teams in the NFL.
@@ -49,7 +49,9 @@ export class TeamRepo {
 	 */
 	public async list(): Promise<Team[]> {
 		if (TeamRepo.teams == null) {
+			console.log('fetching teams')
 			TeamRepo.teams = await this.fetch()
+			console.log('teams', TeamRepo.teams)
 		}
 		return TeamRepo.teams
 	}

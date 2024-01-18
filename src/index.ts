@@ -1,7 +1,6 @@
 import { closeBrowser } from './utils'
 import { predictWinner } from './tools'
-import { MatchRepo } from './repos'
-
+import { Match, MatchRepo } from './repos'
 ;(async () => {
 	// Get all of the game matches for this week
 	const matches = await new MatchRepo().list()
@@ -13,5 +12,5 @@ import { MatchRepo } from './repos'
 	}
 
 	// Close up shop
-	await closeBrowser()
+	// await closeBrowser()
 })()

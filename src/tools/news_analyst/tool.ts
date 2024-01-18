@@ -15,6 +15,8 @@ export type NewsAnalysis = (typeof SCHEMA)['type']
  * @returns {Promise<NewsAnalysis>} The analysis of the article.
  */
 export async function newsAnalyst(title: string, content: string): Promise<NewsAnalysis> {
+	// 5) open ai will tell what is the primaryTeam talked about in the article,
+	// a summary of it and which league is about (I don't think we need the league?)
 	const article = `${title}\n===\n\n${content}`
 	const teams = await new TeamRepo().list()
 	const prompt = SYSTEM_PROMPT(teams)

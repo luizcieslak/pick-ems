@@ -23,7 +23,9 @@ export class MatchRepo {
 	 */
 	public async list(): Promise<Match[]> {
 		if (MatchRepo.matches == null) {
-			MatchRepo.matches = await this.fetch()
+			// MatchRepo.matches = await this.fetch()
+			const mockMath = new Match('Furia', 'Spirit')
+			MatchRepo.matches = [mockMath]
 		}
 		return MatchRepo.matches
 	}

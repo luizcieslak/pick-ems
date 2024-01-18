@@ -9,7 +9,7 @@
 		"test": "npm run clean && npm run build",
 		"watch": "npx nodemon --watch src --watch test -e js,ts -x 'npm run test'",
 		"build": "npm run clean && npx tsc",
-		"start": "npm run build && node dist/src/index.js",
+		"start": "npm run build && node dist/index.js",
 		"clean": "rm -rf dist",
 		"format": "npx prettier --write --ignore-unknown .",
 		"check-format": "npx prettier --check --ignore-unknown .",
@@ -52,6 +52,8 @@
 		"dotenv": "^16.3.1",
 		"openai": "^4.24.7",
 		"playwright": "^1.39.0",
+		"playwright-extra": "^4.3.6",
+		"puppeteer-extra-plugin-stealth": "^2.11.2",
 		"tslib": "^2.5.0"
 	}
 }

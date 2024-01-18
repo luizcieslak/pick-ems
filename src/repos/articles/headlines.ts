@@ -1,9 +1,9 @@
 import { URL } from 'url'
 import { navigateTo, distinct } from '../../utils'
 
-const BASE_URL = 'https://www.espn.com/nfl/'
-const SELECTOR = '.headlineStack__list li a'
-const WAIT_FOR = '.main-content'
+const BASE_URL = 'https://www.hltv.org/'
+const SELECTOR = 'a.newsline.article'
+const WAIT_FOR = '.index'
 
 /**
  * Crawls the front page for ESPN NFL news and grabs the URLs for each headline.

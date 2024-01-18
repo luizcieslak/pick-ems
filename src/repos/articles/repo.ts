@@ -4,9 +4,9 @@ import { navigateTo } from '../../utils'
 import { Locator } from 'playwright'
 import { newsAnalyst } from '../../tools'
 
-const WAIT_FOR = 'article.article'
-const ARTICLE_TITLE = 'header.article-header'
-const ARTICLE_CONTENT = '.article-body p'
+const WAIT_FOR = 'article.newsitem'
+const ARTICLE_TITLE = 'h1.headline'
+const ARTICLE_CONTENT = '.newstext-con p'
 
 /**
  * A repository for retrieving Articles related to recent NFL events.
@@ -24,6 +24,7 @@ export class ArticleRepo {
 	 */
 	public async findByTeams(teams: string[], league: string = 'NFL'): Promise<Article[]> {
 		const articles = await this.list()
+		// 6) filter the articles by the team in the match.
 		return articles.filter(article => teams.includes(article.primaryTeam) && article.league == league)
 	}
 
@@ -34,6 +35,7 @@ export class ArticleRepo {
 	 */
 	public async list(): Promise<Article[]> {
 		if (ArticleRepo.articles == null) {
+			// 2) from homepage, get a list of articles
 			ArticleRepo.articles = await this.fetchAll()
 		}
 		return ArticleRepo.articles
@@ -46,7 +48,13 @@ export class ArticleRepo {
 	 * @returns {Promise<Article[]>} The list of articles for current headlines.
 	 */
 	private async fetchAll(): Promise<Article[]> {
-		const urls = await getHeadlineUrls()
+		// 3) in homepage, get a list of URLs
+		let urls = await getHeadlineUrls()
+		urls = urls.slice(5, 6)
+		console.log(
+			'urls',
+			urls.map(u => u.href)
+		)
 
 		// NOTE: We explicitly use a for-loop instead of `Promise.all` here because
 		// we want to force sequential execution (instead of parallel) because these are
@@ -63,6 +71,8 @@ export class ArticleRepo {
 			}
 		}
 
+		console.log('articles fetchall', articles)
+
 		return articles
 	}
 
@@ -73,10 +83,13 @@ export class ArticleRepo {
 	 * @returns {Promise<Article>} The article.
 	 */
 	private async fetchOne(url: URL): Promise<Article> {
+		// 4) for each URL, get the title, content
+		// feed it into OpenAI
 		const page = await navigateTo(url.toString(), WAIT_FOR)
 
 		const title = await this.getTitle(page)
 		const content = await this.getContent(page)
+		console.log('title and content', title)
 		const { primaryTeam, summary, league } = await newsAnalyst(title, content)
 
 		return new Article(title, content, summary, url, primaryTeam, league)

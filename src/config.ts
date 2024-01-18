@@ -10,7 +10,7 @@ function throwRequiredEnvVar(name: string): never {
 export const CONFIG = {
 	OPENAI_API_KEY: process.env.OPENAI_API_KEY || throwRequiredEnvVar('OPENAI_API_KEY'),
 	HEADLESS: process.env.HEADLESS === 'true',
-	VERBOSE: process.env.VERBOSE === 'true',
+	VERBOSE: true,
 }
 
 // Fail loudly if the OPENAI_API_KEY is still the default value
