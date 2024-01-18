@@ -11,12 +11,8 @@ const DEFINITION = {
 			type: 'string',
 			description: 'The summary of the article.',
 		},
-		league: {
-			enum: ['NFL', 'COLLEGE', 'FANTASY', 'OTHER'],
-			description: 'The league associated with the article.',
-		},
 	},
-	required: ['summary', 'primaryTeam', 'league'],
+	required: ['summary', 'primaryTeam'],
 } as const satisfies JSONSchema
 
 export const SCHEMA = {

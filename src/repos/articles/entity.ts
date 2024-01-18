@@ -14,7 +14,6 @@ export class Article {
 	 * @param summary The summary of the article.
 	 * @param url The URL of the article.
 	 * @param primaryTeam The primary team discussed in the article.
-	 * @param league The league the article is about {NFL, College, Fantasy}.
 	 * @returns A new instance of Article.
 	 */
 	constructor(
@@ -22,7 +21,6 @@ export class Article {
 		public content: string,
 		public summary: string,
 		public url: URL,
-		public primaryTeam: string,
-		public league: string
+		public primaryTeam: string
 	) {}
 }

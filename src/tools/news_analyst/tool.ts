@@ -7,8 +7,7 @@ export type NewsAnalysis = (typeof SCHEMA)['type']
 
 /**
  * Given an article, this analyzes the article to extract the
- * team it is associated with, the league it is associated with,
- * and a summary of the key takeaways from the article.
+ * team it is associated with and a summary of the key takeaways from the article.
  *
  * @param title The title of the article.
  * @param content The content of the article.
@@ -16,7 +15,7 @@ export type NewsAnalysis = (typeof SCHEMA)['type']
  */
 export async function newsAnalyst(title: string, content: string): Promise<NewsAnalysis> {
 	// 5) open ai will tell what is the primaryTeam talked about in the article,
-	// a summary of it and which league is about (I don't think we need the league?)
+	// a summary of it
 	const article = `${title}\n===\n\n${content}`
 	const teams = await new TeamRepo().list()
 	const prompt = SYSTEM_PROMPT(teams)

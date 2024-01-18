@@ -1,5 +1,5 @@
 import { Article } from './entity'
-import { getHeadlineUrls } from './headlines'
+import { getHeadlineUrls, getTeamsHeadlineUrls } from './headlines'
 import { navigateTo } from '../../utils'
 import { Locator } from 'playwright'
 import { newsAnalyst } from '../../tools'
@@ -13,32 +13,78 @@ const ARTICLE_CONTENT = '.newstext-con p'
  */
 export class ArticleRepo {
 	// Cached list of articles for the week.
-	private static articles: Article[] | null = null
+	private static articles: Article[] = []
 
 	/**
 	 * Get the list of articles associated with the given teams.
 	 *
 	 * @param teams The list of teams to filter by.
-	 * @param [league=NFL] The league to filter by.
 	 * @returns {Promise<Article[]>} The list of articles for the week associated with the given teams.
 	 */
-	public async findByTeams(teams: string[], league: string = 'NFL'): Promise<Article[]> {
-		const articles = await this.list()
+	// public async findByTeams(teams: string[]): Promise<Article[]> {
+	// 	const articles = await this.list()
+	// 	// 6) filter the articles by the team in the match.
+	// 	return articles.filter(article => teams.includes(article.primaryTeam))
+	// }
+
+	// /**
+	//  * Get the list of articles associated with current headlines.
+	//  *
+	//  * @returns {Promise<Article[]>} The list of articles for current headlines.
+	//  */
+	// public async list(): Promise<Article[]> {
+	// 	if (ArticleRepo.articles == null) {
+	// 		// 2) from homepage, get a list of articles
+	// 		ArticleRepo.articles = await this.fetchAll()
+	// 	}
+	// 	return ArticleRepo.articles
+	// }
+
+	public async findByTeams(teams: string[]): Promise<Article[]> {
+		// check if there's already articles for these teams
+		const i = ArticleRepo.articles.findIndex(article => teams.includes(article.primaryTeam))
+		if (i !== -1) {
+			return ArticleRepo.articles.filter(article => teams.includes(article.primaryTeam))
+		}
+
+		const articles = await this.fetchFromMatchTeams(teams)
 		// 6) filter the articles by the team in the match.
-		return articles.filter(article => teams.includes(article.primaryTeam) && article.league == league)
+		return articles.filter(article => teams.includes(article.primaryTeam))
 	}
 
 	/**
-	 * Get the list of articles associated with current headlines.
+	 * Navigates to the page containing current headlines and for each headline
+	 * navigates to the article page and scrapes the article.
 	 *
 	 * @returns {Promise<Article[]>} The list of articles for current headlines.
 	 */
-	public async list(): Promise<Article[]> {
-		if (ArticleRepo.articles == null) {
-			// 2) from homepage, get a list of articles
-			ArticleRepo.articles = await this.fetchAll()
+	private async fetchFromMatchTeams(teams: string[]): Promise<Article[]> {
+		// 3) in homepage, get a list of URLs
+		let urls = await getTeamsHeadlineUrls(teams)
+		// urls = urls.slice(5, 6)
+		console.log(
+			'urls',
+			urls.map(u => u.href)
+		)
+
+		// NOTE: We explicitly use a for-loop instead of `Promise.all` here because
+		// we want to force sequential execution (instead of parallel) because these are
+		// all sharing the same browser instance.
+		const articles: Article[] = []
+		for (const url of urls) {
+			try {
+				const article = await this.fetchOne(url)
+				articles.push(article)
+			} catch (e) {
+				// Sometimes things timeout or a rogue headline sneaks in
+				// that is actually an ad. We ignore it and move on.
+				continue
+			}
 		}
-		return ArticleRepo.articles
+
+		console.log('articles fetchall', articles)
+
+		return articles
 	}
 
 	/**
@@ -50,7 +96,7 @@ export class ArticleRepo {
 	private async fetchAll(): Promise<Article[]> {
 		// 3) in homepage, get a list of URLs
 		let urls = await getHeadlineUrls()
-		urls = urls.slice(5, 6)
+		// urls = urls.slice(5, 6)
 		console.log(
 			'urls',
 			urls.map(u => u.href)
@@ -90,9 +136,9 @@ export class ArticleRepo {
 		const title = await this.getTitle(page)
 		const content = await this.getContent(page)
 		console.log('title and content', title)
-		const { primaryTeam, summary, league } = await newsAnalyst(title, content)
+		const { primaryTeam, summary } = await newsAnalyst(title, content)
 
-		return new Article(title, content, summary, url, primaryTeam, league)
+		return new Article(title, content, summary, url, primaryTeam)
 	}
 
 	/**
