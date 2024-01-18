@@ -87,40 +87,40 @@ export class ArticleRepo {
 		return articles
 	}
 
-	/**
-	 * Navigates to the page containing current headlines and for each headline
-	 * navigates to the article page and scrapes the article.
-	 *
-	 * @returns {Promise<Article[]>} The list of articles for current headlines.
-	 */
-	private async fetchAll(): Promise<Article[]> {
-		// 3) in homepage, get a list of URLs
-		let urls = await getHeadlineUrls()
-		// urls = urls.slice(5, 6)
-		console.log(
-			'urls',
-			urls.map(u => u.href)
-		)
+	// /**
+	//  * Navigates to the page containing current headlines and for each headline
+	//  * navigates to the article page and scrapes the article.
+	//  *
+	//  * @returns {Promise<Article[]>} The list of articles for current headlines.
+	//  */
+	// private async fetchAll(): Promise<Article[]> {
+	// 	// 3) in homepage, get a list of URLs
+	// 	let urls = await getHeadlineUrls()
+	// 	// urls = urls.slice(5, 6)
+	// 	console.log(
+	// 		'urls',
+	// 		urls.map(u => u.href)
+	// 	)
 
-		// NOTE: We explicitly use a for-loop instead of `Promise.all` here because
-		// we want to force sequential execution (instead of parallel) because these are
-		// all sharing the same browser instance.
-		const articles: Article[] = []
-		for (const url of urls) {
-			try {
-				const article = await this.fetchOne(url)
-				articles.push(article)
-			} catch (e) {
-				// Sometimes things timeout or a rogue headline sneaks in
-				// that is actually an ad. We ignore it and move on.
-				continue
-			}
-		}
+	// 	// NOTE: We explicitly use a for-loop instead of `Promise.all` here because
+	// 	// we want to force sequential execution (instead of parallel) because these are
+	// 	// all sharing the same browser instance.
+	// 	const articles: Article[] = []
+	// 	for (const url of urls) {
+	// 		try {
+	// 			const article = await this.fetchOne(url)
+	// 			articles.push(article)
+	// 		} catch (e) {
+	// 			// Sometimes things timeout or a rogue headline sneaks in
+	// 			// that is actually an ad. We ignore it and move on.
+	// 			continue
+	// 		}
+	// 	}
 
-		console.log('articles fetchall', articles)
+	// 	console.log('articles fetchall', articles)
 
-		return articles
-	}
+	// 	return articles
+	// }
 
 	/**
 	 * Navigates to the given URL and scrapes the article.
