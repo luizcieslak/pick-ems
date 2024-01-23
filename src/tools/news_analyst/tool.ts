@@ -4,6 +4,12 @@ import { llm } from '../../utils'
 import { SYSTEM_PROMPT } from './prompt'
 import { SCHEMA } from './schema'
 
+const fileExists = (path: string) =>
+	fs.stat(path).then(
+		() => true,
+		() => false
+	)
+
 export type NewsAnalysis = (typeof SCHEMA)['type']
 
 /**
@@ -20,6 +26,18 @@ export async function newsAnalyst(
 	team: string,
 	cacheResponse = true
 ): Promise<NewsAnalysis> {
+	const articlesPath = path.join(__filename, '../../../../../', 'articles/')
+	const filename = `${team}-${title}.json`
+	const filePath = path.join(articlesPath, filename)
+
+	const summaryAlreadyDone = await fileExists(filePath)
+
+	if (cacheResponse && summaryAlreadyDone) {
+		const file = await fs.readFile(filePath, 'utf-8')
+		console.log('returning cached file for', filePath)
+		return JSON.parse(file) as NewsAnalysis
+	}
+
 	// 5) open ai will tell what is the primaryTeam talked about in the article,
 	// a summary of it
 	const article = `${title}\n===\n\n${content}`
@@ -28,10 +46,9 @@ export async function newsAnalyst(
 	const response = await llm(prompt, article, SCHEMA)
 
 	if (cacheResponse) {
-		const articlesPath = path.join(__filename, '../../../../', 'articles/')
 		console.log(articlesPath)
 		await fs.mkdir(articlesPath, { recursive: true })
-		await fs.writeFile(path.join(articlesPath, `${team}-${title}.json`), JSON.stringify(response), 'utf-8')
+		await fs.writeFile(filePath, JSON.stringify(response), 'utf-8')
 	}
 
 	return response

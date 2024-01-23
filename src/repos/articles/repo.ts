@@ -148,7 +148,6 @@ export class ArticleRepo {
 
 		const title = await this.getTitle(page)
 		const content = await this.getContent(page)
-		console.log('title and content', title)
 		const { summary } = await newsAnalyst(title, content, team)
 
 		return new Article(title, content, summary, url, team)
