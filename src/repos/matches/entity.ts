@@ -38,9 +38,8 @@ export class Match {
 		const stats: { [key in TeamStatType]: TeamStats[] } = {
 			[TeamStatType.TEAM_STATS]: [],
 			[TeamStatType.WORLD_RANKING]: [],
+			[TeamStatType.EVENT_HISTORY]: [],
 		}
-
-		debugger
 
 		for (const type of Object.values(TeamStatType)) {
 			for (const team of teams) {

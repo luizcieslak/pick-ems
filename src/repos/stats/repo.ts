@@ -23,7 +23,15 @@ export class TeamStatsRepo {
 		const locator = await navigateTo(`${BASE_URL_SEARCH}?query=${team}`, WAIT_FOR_SEARCH)
 		const headlines = await locator.locator(SELECTOR_SEARCH).all()
 		const hrefs = await Promise.all(headlines.map(async headline => headline.getAttribute('href')))
-		return hrefs[0] as string | null
+
+		if (!hrefs[0]) return null
+
+		const statPage = `https://www.hltv.org/stats/teams${hrefs[0].replace(
+			'/team',
+			''
+		)}?startDate=2023-06-18&endDate=2025-01-18`
+
+		return statPage
 	}
 
 	private async getTeamPage(team: string): Promise<string | null> {
@@ -40,7 +48,6 @@ export class TeamStatsRepo {
 	 * @returns {Promise<TeamStats[]>} The stats of the given type for all teams.
 	 */
 	private async fetchTypeByTeam(team: string, type: StatType): Promise<TeamStats | null> {
-		debugger
 		if (type === TeamStatType.TEAM_STATS) {
 			const statsPage = await this.getTeamStatsPage(team)
 
@@ -48,13 +55,7 @@ export class TeamStatsRepo {
 				throw new Error(`No stats page found for ${team} and ${type}`)
 			}
 
-			const page = await navigateTo(
-				`https://www.hltv.org/stats/teams${statsPage.replace(
-					'/team',
-					''
-				)}?startDate=2023-10-18&endDate=2024-01-18`,
-				WAIT_FOR
-			)
+			const page = await navigateTo(statsPage, WAIT_FOR)
 
 			let teamStat: TeamStats | null = null
 
@@ -89,6 +90,34 @@ export class TeamStatsRepo {
 					'World Ranking': worldRanking,
 				})
 			}
+		}
+
+		if (type === TeamStatType.EVENT_HISTORY) {
+			const statsPage = await this.getTeamStatsPage(team)
+			if (!statsPage) {
+				throw new Error(`No stats page found for ${team} and ${type}`)
+			}
+			const eventsPage = statsPage.replace('/teams/', '/teams/events/')
+			const page = await navigateTo(eventsPage, WAIT_FOR)
+
+			// header + first 10 rows of the table
+			const tableRows = await page.locator('table.stats-table tbody tr').all()
+
+			const eventHistoryObj: Record<string, string> = {}
+
+			for await (const tr of tableRows) {
+				const row = await tr.locator('td').all()
+				if (row.length === 0) continue
+
+				const pos = await row[0]?.textContent()
+				const eventName = await row[1]?.textContent()
+
+				if (typeof pos === 'string' && typeof eventName === 'string' && pos !== '-') {
+					eventHistoryObj[eventName] = pos
+				}
+			}
+
+			return new TeamStats(team, type, eventHistoryObj)
 		}
 
 		return null

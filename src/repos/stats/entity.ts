@@ -4,7 +4,7 @@ export enum TeamStatType {
 	TEAM_STATS = 'Team Stats',
 	WORLD_RANKING = 'World ranking',
 	// TRY ADDING EVENT HISTORY: EXAMPLE: https://www.hltv.org/stats/teams/events/9565/vitality?startDate=2023-10-18&endDate=2024-01-18
-	// EVENT_HISTORY = 'Event History',
+	EVENT_HISTORY = 'Event History',
 }
 
 /**
