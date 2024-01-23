@@ -11,12 +11,13 @@ import { Match } from '../../repos'
  */
 export async function predictWinner(match: Match): Promise<string> {
 	const articles = await match.articles()
-	// const stats = await match.stats()
-
-	// const systemPrompt = SYSTEM_PROMPT(stats, match, articles)
-	// const response = await llm(systemPrompt, match, SCHEMA)
-
-	// return response.winningTeam
 	console.log('articles?', articles)
-	return 'wow'
+	// 8) get stats
+	const stats = await match.stats()
+	console.log('stats?', stats)
+
+	const systemPrompt = SYSTEM_PROMPT(stats, match, articles)
+	const response = await llm(systemPrompt, match, SCHEMA)
+
+	return response.winningTeam
 }

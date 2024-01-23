@@ -14,7 +14,7 @@ const WAIT_FOR_SEARCH = '.contentCol'
 
 /**
  * A repository for retrieving historical stats for each team across
- * offense, defense, turnovers, and special teams.
+ * KDA ratio and win rate.
  */
 export class TeamStatsRepo {
 	private static teamStats: TeamStats[] = []
@@ -22,9 +22,7 @@ export class TeamStatsRepo {
 	private async getTeamStatsPage(team: string): Promise<string | null> {
 		const locator = await navigateTo(`${BASE_URL_SEARCH}?query=${team}`, WAIT_FOR_SEARCH)
 		const headlines = await locator.locator(SELECTOR_SEARCH).all()
-		console.log('headlines?', headlines)
 		const hrefs = await Promise.all(headlines.map(async headline => headline.getAttribute('href')))
-		console.log('hrefs?', hrefs)
 		return hrefs[0] as string | null
 	}
 

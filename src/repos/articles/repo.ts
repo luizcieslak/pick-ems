@@ -1,5 +1,5 @@
 import { Article } from './entity'
-import { getHeadlineUrls, getTeamsHeadlineUrls } from './headlines'
+import { getTeamHeadlineUrls } from './headlines'
 import { navigateTo } from '../../utils'
 import { Locator } from 'playwright'
 import { newsAnalyst } from '../../tools'
@@ -60,20 +60,33 @@ export class ArticleRepo {
 	 */
 	private async fetchFromMatchTeams(teams: string[]): Promise<Article[]> {
 		// 3) in homepage, get a list of URLs
-		let urls = await getTeamsHeadlineUrls(teams)
-		// urls = urls.slice(5, 6)
-		console.log(
-			'urls',
-			urls.map(u => u.href)
-		)
+		if (teams.length < 2) throw new Error('Not enough Teams in fetchFromMatchTeams')
+
+		// @ts-ignore teams[0] is not undefined
+		const urlsTeam0 = await getTeamHeadlineUrls(teams[0])
+		// @ts-ignore teams[1] is not undefined
+		const urlsTeam1 = await getTeamHeadlineUrls(teams[1])
 
 		// NOTE: We explicitly use a for-loop instead of `Promise.all` here because
 		// we want to force sequential execution (instead of parallel) because these are
 		// all sharing the same browser instance.
 		const articles: Article[] = []
-		for (const url of urls) {
+		for (const url of urlsTeam0) {
 			try {
-				const article = await this.fetchOne(url)
+				// @ts-ignore teams[0] is not undefined
+				const article = await this.fetchOne(url, teams[0])
+				articles.push(article)
+			} catch (e) {
+				// Sometimes things timeout or a rogue headline sneaks in
+				// that is actually an ad. We ignore it and move on.
+				continue
+			}
+		}
+
+		for (const url of urlsTeam1) {
+			try {
+				// @ts-ignore teams[0] is not undefined
+				const article = await this.fetchOne(url, teams[1])
 				articles.push(article)
 			} catch (e) {
 				// Sometimes things timeout or a rogue headline sneaks in
@@ -128,7 +141,7 @@ export class ArticleRepo {
 	 * @param url The URL of the article to scrape.
 	 * @returns {Promise<Article>} The article.
 	 */
-	private async fetchOne(url: URL): Promise<Article> {
+	private async fetchOne(url: URL, team: string): Promise<Article> {
 		// 4) for each URL, get the title, content
 		// feed it into OpenAI
 		const page = await navigateTo(url.toString(), WAIT_FOR)
@@ -136,9 +149,9 @@ export class ArticleRepo {
 		const title = await this.getTitle(page)
 		const content = await this.getContent(page)
 		console.log('title and content', title)
-		const { primaryTeam, summary } = await newsAnalyst(title, content)
+		const { summary } = await newsAnalyst(title, content, team)
 
-		return new Article(title, content, summary, url, primaryTeam)
+		return new Article(title, content, summary, url, team)
 	}
 
 	/**

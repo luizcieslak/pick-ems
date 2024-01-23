@@ -12,5 +12,5 @@ import { Match, MatchRepo } from './repos'
 	}
 
 	// Close up shop
-	// await closeBrowser()
+	await closeBrowser()
 })()

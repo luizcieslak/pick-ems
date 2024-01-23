@@ -3,10 +3,10 @@ import type { FromSchema, JSONSchema } from 'json-schema-to-ts'
 const DEFINITION = {
 	type: 'object',
 	properties: {
-		primaryTeam: {
-			type: 'string',
-			description: 'The primary team associated with the article.',
-		},
+		// primaryTeam: {
+		// 	type: 'string',
+		// 	description: 'The primary team associated with the article.',
+		// },
 		summary: {
 			type: 'string',
 			description: 'The summary of the article.',
