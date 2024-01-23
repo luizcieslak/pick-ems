@@ -1,5 +1,5 @@
 import { navigateTo } from '../../utils'
-import { TeamStats, TeamStatType as StatType } from './entity'
+import { TeamStats, TeamStatType as StatType, TeamStatType } from './entity'
 
 const WAIT_FOR = '.contentCol'
 
@@ -26,6 +26,13 @@ export class TeamStatsRepo {
 		return hrefs[0] as string | null
 	}
 
+	private async getTeamPage(team: string): Promise<string | null> {
+		const locator = await navigateTo(`${BASE_URL_SEARCH}?query=${team}`, WAIT_FOR_SEARCH)
+		const headlines = await locator.locator(SELECTOR_SEARCH).all()
+		const hrefs = await Promise.all(headlines.map(async headline => headline.getAttribute('href')))
+		return hrefs[0] as string | null
+	}
+
 	/**
 	 * Scrapes a specific type of stats for all teams.
 	 *
@@ -33,42 +40,58 @@ export class TeamStatsRepo {
 	 * @returns {Promise<TeamStats[]>} The stats of the given type for all teams.
 	 */
 	private async fetchTypeByTeam(team: string, type: StatType): Promise<TeamStats | null> {
-		const statsPage = await this.getTeamStatsPage(team)
+		debugger
+		if (type === TeamStatType.TEAM_STATS) {
+			const statsPage = await this.getTeamStatsPage(team)
 
-		if (!statsPage) {
-			throw new Error(`No stats page found for ${team} and ${type}`)
-		}
+			if (!statsPage) {
+				throw new Error(`No stats page found for ${team} and ${type}`)
+			}
 
-		const page = await navigateTo(
-			`https://www.hltv.org/stats/teams${statsPage.replace(
-				'/team',
-				''
-			)}?startDate=2023-10-18&endDate=2024-01-18`,
-			WAIT_FOR
-		)
+			const page = await navigateTo(
+				`https://www.hltv.org/stats/teams${statsPage.replace(
+					'/team',
+					''
+				)}?startDate=2023-10-18&endDate=2024-01-18`,
+				WAIT_FOR
+			)
 
-		let teamStat: TeamStats | null = null
+			let teamStat: TeamStats | null = null
 
-		const wdl = page.locator('.columns .standard-box .large-strong').nth(1)
-		const wdlString = await wdl.textContent()
-		const kdRatio = page.locator('.columns .standard-box .large-strong').nth(5)
-		const kdRatioString = await kdRatio.textContent()
+			const wdl = page.locator('.columns .standard-box .large-strong').nth(1)
+			const wdlString = await wdl.textContent()
+			const kdRatio = page.locator('.columns .standard-box .large-strong').nth(5)
+			const kdRatioString = await kdRatio.textContent()
 
-		if (wdlString && kdRatioString) {
-			const [wins, draw, losses] = wdlString?.split(' / ').map(s => parseInt(s))
-			// @ts-ignore handle error on these later
-			const total = wins + draw + losses
-			teamStat = new TeamStats(team, type, {
+			if (wdlString && kdRatioString) {
+				const [wins, draw, losses] = wdlString?.split(' / ').map(s => parseInt(s))
 				// @ts-ignore handle error on these later
-				'Win rate': `${(wins / total) * 100}%`,
-				// wins, draw, losses,
-				'Kill death ratio': kdRatioString,
-			})
+				const total = wins + draw + losses
+				teamStat = new TeamStats(team, type, {
+					// @ts-ignore handle error on these later
+					'Win rate': `${(wins / total) * 100}%`,
+					// wins, draw, losses,
+					'Kill death ratio': kdRatioString,
+				})
+			}
+
+			console.log('team stat', team, type, teamStat)
+
+			return teamStat
 		}
 
-		console.log('team stat', team, type, teamStat)
+		if (type === TeamStatType.WORLD_RANKING) {
+			const teamPage = await this.getTeamPage(team)
+			const page = await navigateTo(`https://www.hltv.org${teamPage}`, WAIT_FOR)
+			const worldRanking = await page.locator('.profile-team-stat').first().locator('.right').textContent()
+			if (typeof worldRanking === 'string') {
+				return new TeamStats(team, type, {
+					'World Ranking': worldRanking,
+				})
+			}
+		}
 
-		return teamStat
+		return null
 	}
 
 	/**
@@ -79,7 +102,8 @@ export class TeamStatsRepo {
 	 * @returns {Promise<TeamStats>} The stats for the given team and type.
 	 */
 	public async findByTeamAndType(team: string, type: StatType): Promise<TeamStats | null> {
-		// check if there's already articles for these teams
+		console.log('finding stats for', team, 'type of', type)
+		// check if there's already stats for this team
 		const teamStat = TeamStatsRepo.teamStats.find(teamStats => teamStats.team === team)
 		if (teamStat) {
 			return teamStat
