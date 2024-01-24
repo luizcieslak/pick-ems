@@ -87,5 +87,13 @@ export async function llm<T>(
 		console.log('=============================================')
 	}
 
+	let conclusion = contentObj.conclusion
+	// Edge case: LLM sometimes might not provide the conclusion required and it will return
+	// an string instead of a object requested in the schema.
+	if (typeof conclusion !== 'object') {
+		console.warn('LLM Could not make conclusion', conclusion)
+		return { analysis: contentObj.analysis } as T
+	}
+
 	return { ...contentObj.conclusion, analysis: contentObj.analysis } as T
 }
