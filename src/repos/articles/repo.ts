@@ -67,8 +67,10 @@ export class ArticleRepo {
 		// @ts-ignore teams[1] is not undefined
 		const urlsTeam1 = await getTeamHeadlineUrls(teams[1])
 
+		console.log('articles list', JSON.stringify([...urlsTeam0, ...urlsTeam1], null, 2))
+
 		// NOTE: We explicitly use a for-loop instead of `Promise.all` here because
-		// we want to force sequential execution (instead of parallel) because these are
+		// we want to force sequential execution (instead of paralle6l) because these are
 		// all sharing the same browser instance.
 		const articles: Article[] = []
 		for (const url of urlsTeam0) {
@@ -94,8 +96,6 @@ export class ArticleRepo {
 				continue
 			}
 		}
-
-		console.log('articles fetchall', articles)
 
 		return articles
 	}

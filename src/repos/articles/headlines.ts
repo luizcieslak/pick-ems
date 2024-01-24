@@ -37,11 +37,11 @@ export async function getTeamHeadlineUrls(team: string, limit = 10): Promise<URL
 	return distinct(hrefs)
 		.filter(
 			href =>
-				!href ||
-				!href.includes('fantasy-game') ||
-				!href.includes('schedule') ||
-				!href.includes('team-list') ||
-				!href.endsWith('revealed') ||
+				href &&
+				!href.includes('fantasy-game') &&
+				!href.includes('schedule') &&
+				!href.includes('team-list') &&
+				!href.endsWith('revealed') &&
 				!href.endsWith('guide')
 		)
 		.map(href => new URL(href || '', BASE_URL_SEARCH))

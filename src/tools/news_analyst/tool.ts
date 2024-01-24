@@ -26,6 +26,7 @@ export async function newsAnalyst(
 	team: string,
 	cacheResponse = true
 ): Promise<NewsAnalysis> {
+	console.log('content size', content.length)
 	const articlesPath = path.join(__filename, '../../../../', 'articles-cached/')
 	const filename = `${team}-${title}.json`
 	const filePath = path.join(articlesPath, filename)
@@ -38,9 +39,8 @@ export async function newsAnalyst(
 		return JSON.parse(file) as NewsAnalysis
 	}
 
-	// 5) open ai will tell what is the primaryTeam talked about in the article,
-	// a summary of it
-	const article = `${title}\n===\n\n${content}`
+	// 7000 characters seems to be the limit the LLM is able to summarize without taking too long and timeout.
+	const article = `${title}\n===\n\n${content.slice(0, 7000)}`
 	const prompt = SYSTEM_PROMPT(team)
 
 	const response = await llm(prompt, article, SCHEMA)
