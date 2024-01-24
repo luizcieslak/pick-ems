@@ -29,14 +29,21 @@ const WAIT_FOR = '.contentCol'
 /**
  * Crawls the search page for HLTV news for a team in specific and grabs the URLs for each headline.
  */
-export async function getTeamHeadlineUrls(team: string, limit = 5): Promise<URL[]> {
+export async function getTeamHeadlineUrls(team: string, limit = 10): Promise<URL[]> {
 	const teamPage = await getTeamPage(team)
 	const locator = await navigateTo(`${BASE_URL}${teamPage}#tab-newsBox`, WAIT_FOR)
 	const headlines = await locator.locator(`${SELECTOR}:nth-child(-n+${limit + 2})`).all()
 	const hrefs = await Promise.all(headlines.map(async headline => headline.getAttribute('href')))
 	return distinct(hrefs)
+		.filter(
+			href =>
+				href?.includes('fantasy-game') ||
+				href?.includes('schedule') ||
+				href?.includes('team-list') ||
+				href?.endsWith('revealed') ||
+				href?.endsWith('guide')
+		)
 		.map(href => new URL(href || '', BASE_URL_SEARCH))
-		.slice(0, limit)
 }
 
 // /**
