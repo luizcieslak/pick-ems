@@ -13,10 +13,9 @@ import { Match } from '../../repos'
  */
 export async function predictWinner(match: Match, cacheResponse = true): Promise<string> {
 	const articles = await match.articles()
-	console.log('articles?', articles)
 	// 8) get stats
 	const stats = await match.stats()
-	console.log('stats?', stats)
+	// console.log('stats?', JSON.stringify(stats, null, 2))
 
 	// get match history
 	const matchHistory = await match.matchHistory()

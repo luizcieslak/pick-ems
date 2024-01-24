@@ -30,7 +30,12 @@ ${Object.values(TeamStatType)
 		type => `
 ${type}
 ====================================
-${toMarkdown(appendTable(stats[type][0]!.toTable(), stats[type][1]!.toTable()))}
+${
+	type === TeamStatType.EVENT_HISTORY
+		? // event history table should be split as the events might be diff
+		  toMarkdown(stats[type][0]!.toTable()) + '\n\n' + toMarkdown(stats[type][1]!.toTable())
+		: toMarkdown(appendTable(stats[type][0]!.toTable(), stats[type][1]!.toTable()))
+}
 `
 	)
 	.join('\n')}
