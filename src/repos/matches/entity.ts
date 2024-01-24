@@ -1,5 +1,5 @@
 import { ArticleRepo, Article } from '../articles'
-import { TeamStatsRepo, TeamStats, TeamStatType } from '../stats'
+import { TeamStatsRepo, TeamStats, TeamStatType, MatchHistory } from '../stats'
 /**
  * A match up between two teams.
  *
@@ -52,5 +52,16 @@ export class Match {
 		}
 
 		return stats
+	}
+
+	/**
+	 * Get all of the previous results from this same matchup.
+	 *
+	 */
+	public async matchHistory(): Promise<MatchHistory[]> {
+		const teams = [this.away, this.home]
+		const repo = new TeamStatsRepo()
+
+		return repo.findMatchHistory(teams)
 	}
 }

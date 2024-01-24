@@ -1,10 +1,11 @@
-import { Match, TeamStats, TeamStatType, Article } from '../../repos'
+import { Match, TeamStats, TeamStatType, Article, toTable, MatchHistory } from '../../repos'
 import { toMarkdown, appendTable } from '../../utils'
 
 export const SYSTEM_PROMPT = (
 	stats: { [key in TeamStatType]: TeamStats[] },
 	match: Match,
-	articles: Article[]
+	articles: Article[],
+	matchHistory: MatchHistory[]
 ) => `
 You are an expert at choosing winning Counter-Strike teams in a "pick ems" competition. The teams are playing in a championship called "PGL CS2 Major Championship". This is just for fun between friends. There is no betting or money to be made, but you will scrutinize your answer and think carefully.
 
@@ -51,6 +52,9 @@ ${article.summary}
 	)
 	.join('\n')}`
 }
+
+Here are the this same match results from the past:
+${toMarkdown(toTable(matchHistory))}
 
 The team name you choose *MUST* be one of the following:
   * ${match.home}

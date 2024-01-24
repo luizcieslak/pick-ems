@@ -1,11 +1,11 @@
 import { navigateTo } from '../../utils'
 import { TeamStats, TeamStatType as StatType, TeamStatType } from './entity'
+import { MatchHistory } from './gameHistory'
 
 const WAIT_FOR = '.contentCol'
 
 const BASE_URL_SEARCH = 'https://www.hltv.org/search'
 const SELECTOR_SEARCH = 'td a[href^="/team"]'
-const WAIT_FOR_SEARCH = '.contentCol'
 
 // const SOURCES: { [key in StatType]: string } = {
 // 	[StatType.TEAM_STATS]: 'https://www.hltv.org/stats/teams/',
@@ -20,7 +20,7 @@ export class TeamStatsRepo {
 	private static teamStats: TeamStats[] = []
 
 	private async getTeamStatsPage(team: string): Promise<string | null> {
-		const locator = await navigateTo(`${BASE_URL_SEARCH}?query=${team}`, WAIT_FOR_SEARCH)
+		const locator = await navigateTo(`${BASE_URL_SEARCH}?query=${team}`, WAIT_FOR)
 		const headlines = await locator.locator(SELECTOR_SEARCH).all()
 		const hrefs = await Promise.all(headlines.map(async headline => headline.getAttribute('href')))
 
@@ -35,7 +35,7 @@ export class TeamStatsRepo {
 	}
 
 	private async getTeamPage(team: string): Promise<string | null> {
-		const locator = await navigateTo(`${BASE_URL_SEARCH}?query=${team}`, WAIT_FOR_SEARCH)
+		const locator = await navigateTo(`${BASE_URL_SEARCH}?query=${team}`, WAIT_FOR)
 		const headlines = await locator.locator(SELECTOR_SEARCH).all()
 		const hrefs = await Promise.all(headlines.map(async headline => headline.getAttribute('href')))
 		return hrefs[0] as string | null
@@ -140,6 +140,72 @@ export class TeamStatsRepo {
 
 		const stats = await this.fetchTypeByTeam(team, type)
 		return stats
+	}
+
+	private async getTeamId(team: string): Promise<string> {
+		const locator = await navigateTo(`${BASE_URL_SEARCH}?query=${team}`, WAIT_FOR)
+		const headlines = await locator.locator(SELECTOR_SEARCH).all()
+		const hrefs = await Promise.all(headlines.map(async headline => headline.getAttribute('href')))
+		if (!hrefs[0]) {
+			throw new Error(`cant find a href in ${hrefs[0]}`)
+		}
+		// /team/:id/:name
+		const [_, _team, id, _name] = hrefs[0].split('/')
+		if (!id) {
+			throw new Error(`cant find a id in ${hrefs[0]}`)
+		}
+		return id
+	}
+
+	private async getTeamsMatchHistory(team0Id: string, team1Id: string): Promise<MatchHistory[]> {
+		debugger
+		const BASE_URL_RESULTS = 'https://www.hltv.org/results'
+		const url = new URL(BASE_URL_RESULTS)
+		url.searchParams.append('startDate', '2023-06-18')
+		url.searchParams.append('endDate', '2025-06-18')
+		url.searchParams.append('requireAllTeams', '')
+		url.searchParams.append('team', team0Id)
+		url.searchParams.append('team', team1Id)
+
+		const page = await navigateTo(url.toString(), WAIT_FOR)
+		const tableRows = await page.locator('.results-all table tbody tr').all()
+
+		let MatchHistoryArray: Array<MatchHistory> = []
+
+		for await (const tr of tableRows) {
+			const higherSeedTeam = await tr.locator('.team1 .team').textContent()
+			const lowerSeedTeam = await tr.locator('.team2 .team').textContent()
+			const winner = await tr.locator('.team-won').textContent()
+			const event = await tr.locator('.event .event-name').textContent()
+
+			if (
+				typeof higherSeedTeam === 'string' &&
+				typeof lowerSeedTeam === 'string' &&
+				typeof winner === 'string' &&
+				typeof event === 'string'
+			) {
+				MatchHistoryArray.push({
+					'Higher seed team': higherSeedTeam,
+					'Lower seed team': lowerSeedTeam,
+					'Winner of the match': winner,
+					Event: event,
+				})
+			}
+		}
+
+		return MatchHistoryArray
+	}
+
+	public async findMatchHistory(teams: string[]): Promise<MatchHistory[]> {
+		console.log('finding match history for', teams)
+		// check if there's already match history for both teams here
+
+		// @ts-ignore teams[0] is not undefined
+		const team0id = await this.getTeamId(teams[0])
+		// @ts-ignore teams[1] is not undefined
+		const team1id = await this.getTeamId(teams[1])
+
+		return this.getTeamsMatchHistory(team0id, team1id)
 	}
 
 	// /**

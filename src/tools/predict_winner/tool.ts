@@ -16,7 +16,10 @@ export async function predictWinner(match: Match): Promise<string> {
 	const stats = await match.stats()
 	console.log('stats?', stats)
 
-	const systemPrompt = SYSTEM_PROMPT(stats, match, articles)
+	// get match history
+	const matchHistory = await match.matchHistory()
+
+	const systemPrompt = SYSTEM_PROMPT(stats, match, articles, matchHistory)
 	const response = await llm(systemPrompt, match, SCHEMA)
 
 	return response.winningTeam
