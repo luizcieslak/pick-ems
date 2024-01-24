@@ -29,7 +29,7 @@ const WAIT_FOR = '.contentCol'
 /**
  * Crawls the search page for HLTV news for a team in specific and grabs the URLs for each headline.
  */
-export async function getTeamHeadlineUrls(team: string, limit = 1): Promise<URL[]> {
+export async function getTeamHeadlineUrls(team: string, limit = 5): Promise<URL[]> {
 	const teamPage = await getTeamPage(team)
 	const locator = await navigateTo(`${BASE_URL}${teamPage}#tab-newsBox`, WAIT_FOR)
 	const headlines = await locator.locator(`${SELECTOR}:nth-child(-n+${limit + 2})`).all()

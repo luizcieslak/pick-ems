@@ -4,5 +4,6 @@ dist
 TODO
 .vim
 playwright/.auth/*
-articles
-stats
+articles-cached
+stats-cached
+matches-cached

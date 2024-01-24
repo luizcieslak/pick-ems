@@ -11,8 +11,12 @@ const DEFINITION = {
 			type: 'string',
 			description: 'The summary of the article.',
 		},
+		analysis: {
+			type: 'string',
+			description: 'Analysis done by LLM',
+		},
 	},
-	required: ['summary', 'primaryTeam'],
+	required: ['summary', 'analysis'],
 } as const satisfies JSONSchema
 
 export const SCHEMA = {

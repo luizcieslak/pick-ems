@@ -158,7 +158,6 @@ export class TeamStatsRepo {
 	}
 
 	private async getTeamsMatchHistory(team0Id: string, team1Id: string): Promise<MatchHistory[]> {
-		debugger
 		const BASE_URL_RESULTS = 'https://www.hltv.org/results'
 		const url = new URL(BASE_URL_RESULTS)
 		url.searchParams.append('startDate', '2023-06-18')

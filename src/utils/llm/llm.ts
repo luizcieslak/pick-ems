@@ -79,11 +79,13 @@ export async function llm<T>(
 		throw new Error('LLM did not return arguments to parse')
 	}
 
+	const contentObj = JSON.parse(content)
+
 	if (VERBOSE) {
 		console.log('\nRESPONSE:\n')
-		console.log(JSON.stringify(JSON.parse(content), null, 2))
+		console.log(JSON.stringify(contentObj, null, 2))
 		console.log('=============================================')
 	}
 
-	return JSON.parse(content).conclusion as T
+	return { ...contentObj.conclusion, analysis: contentObj.analysis } as T
 }

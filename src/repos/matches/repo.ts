@@ -25,8 +25,15 @@ export class MatchRepo {
 		if (MatchRepo.matches == null) {
 			// MatchRepo.matches = await this.fetch()
 			// const mockMath = new Match('MIBR', 'ODDIK')
-			const mockMath = new Match('NAVI', 'G2')
-			MatchRepo.matches = [mockMath]
+			// MatchRepo.matches = [new Match('Sharks', 'paiN'), new Match('9z', 'Imperial')]
+			// MatchRepo.matches = [new Match('9z', 'Imperial')]
+			MatchRepo.matches = [
+				new Match('Spirit', 'Liquid'),
+				new Match('FaZe', 'GamerLegion'),
+				new Match('Virtus.pro', 'BIG'),
+				new Match('Guild Eagles', 'ALTERNATE aTTaX'),
+				new Match('Cloud9', 'Heroic'),
+			]
 		}
 		return MatchRepo.matches
 	}

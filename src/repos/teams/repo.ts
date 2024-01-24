@@ -1,7 +1,7 @@
 import { Team } from './entity'
 import { navigateTo } from '../../utils'
 
-const URL = 'https://www.hltv.org/stats/teams?startDate=2023-10-18&endDate=2024-01-18&rankingFilter=Top50'
+const URL = 'https://www.hltv.org/stats/teams?startDate=2023-10-18&endDate=2025-01-18&rankingFilter=Top50'
 const WAIT_FOR = '.contentCol'
 const SELECTOR = 'td a'
 

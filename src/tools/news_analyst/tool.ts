@@ -26,7 +26,7 @@ export async function newsAnalyst(
 	team: string,
 	cacheResponse = true
 ): Promise<NewsAnalysis> {
-	const articlesPath = path.join(__filename, '../../../../../', 'articles/')
+	const articlesPath = path.join(__filename, '../../../../', 'articles-cached/')
 	const filename = `${team}-${title}.json`
 	const filePath = path.join(articlesPath, filename)
 
@@ -46,7 +46,7 @@ export async function newsAnalyst(
 	const response = await llm(prompt, article, SCHEMA)
 
 	if (cacheResponse) {
-		console.log(articlesPath)
+		console.log('saving', filePath)
 		await fs.mkdir(articlesPath, { recursive: true })
 		await fs.writeFile(filePath, JSON.stringify(response), 'utf-8')
 	}

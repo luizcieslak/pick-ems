@@ -7,8 +7,12 @@ const DEFINITION = {
 			type: 'string',
 			description: 'The name of the winning team.',
 		},
+		analysis: {
+			type: 'string',
+			description: 'Analysis done by LLM',
+		},
 	},
-	required: ['winningTeam'],
+	required: ['winningTeam', 'analysis'],
 } as const satisfies JSONSchema
 
 export const SCHEMA = {
