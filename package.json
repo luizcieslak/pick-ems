@@ -1,7 +1,7 @@
 {
-	"name": "pick-ems-bot",
+	"name": "pick-ems",
 	"version": "0.0.1",
-	"description": "An LLM-powered agent that chooses NFL teams in a pick'ems pool.",
+	"description": "An LLM-powered agent that chooses CS2 teams in a pick'ems pool.",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
@@ -18,7 +18,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/stevekrenzel/pick-ems.git"
+		"url": "git+https://github.com/luizcieslak/pick-ems.git"
 	},
 	"files": [
 		"dist/src/**/*",
@@ -34,12 +34,12 @@
 	"author": "Steve Krenzel",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/stevekrenzel/pick-ems/issues"
+		"url": "https://github.com/luizcieslak/pick-ems/issues"
 	},
 	"lint-staged": {
 		"*": "prettier --write --ignore-unknown --no-error-on-unmatched-pattern"
 	},
-	"homepage": "https://github.com/stevekrenzel/pick-ems#readme",
+	"homepage": "https://github.com/luizcieslak/pick-ems#readme",
 	"devDependencies": {
 		"json-schema-to-ts": "^3.0.0",
 		"lint-staged": "^13.2.2",

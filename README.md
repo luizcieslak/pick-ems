@@ -1,20 +1,26 @@
-# :football: Pick-Em's LLM Bot
+# :gun: CS2 Pick-Em's LLM Bot
 
-This is an LLM agent built on top of OpenAI that predicts winners for [ESPN's
-Pick-Em's game](https://fantasy.espn.com/games/nfl-pigskin-pickem-2023).
+This is a fork of Steve Krenzel's [pick-ems](https://github.com/stevekrenzel/pick-ems) LLM agent built on top of OpenAI that predicts winners for CS2 games.
 
-For the 2023 NFL season, this agent won my local group's pick-em's competition
-and came in the top 15% across all of ESPN's users (~one million users
-played). The top player across all of ESPN for 2023 correctly chose 195 games
-(~71%). This agent correctly chose 163 (~60%).
+The code was modified to predict specifically 2024 PGL Major Copenhagen games and therefore also predict a winner of this championship.
+
+Each round of the competition is fed manually.
+
+<!-- Add major results here afterwards -->
+
+## Additional features added from the fork
+
+- [puppeteer-extra-plugin-stealth](https://github.com/berstend/puppeteer-extra/tree/master/packages/puppeteer-extra-plugin-stealth) required to scrape HLTV's website (:pray: thank you HLTV for letting us scrape your website, your content rocks and for decades it's been the go-to place everyone goes when we talk about Counter-Strike.)
+- Cached article analysis in JSON files (so my OpenAI billing doesn't skyrocket)
+- Back feeding results from the championship for the next rounds.
 
 ## How Does It Work?
 
 At a high-level, the agent crawls a bunch of statistics and news articles on
-ESPN's website. For each match in a given week it will feed the LLM
+HLTV's website. For each match it will feed the LLM
 stats and news relevant to that match and have it predict a winner.
 
-The data retrieval is done by scraping ESPN pages (built using
+The data retrieval is done by scraping HLTV pages (built using
 [Playwright](https://playwright.dev/)).
 
 The data analysis is done by the LLM.
@@ -57,7 +63,7 @@ The agents know how to:
 To get started, you first need to clone the code and install your dependencies.
 
 ```sh
-$ git clone git@github.com:stevekrenzel/pick-ems.git
+$ git clone git@github.com:luizcieslak/pick-ems.git
 $ npm install
 ```
 
