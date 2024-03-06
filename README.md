@@ -10,7 +10,7 @@ Each round of the competition is fed manually.
 
 ## Additional features added from the fork
 
-- [puppeteer-extra-plugin-stealth](https://github.com/berstend/puppeteer-extra/tree/master/packages/puppeteer-extra-plugin-stealth) required to scrape HLTV's website (:pray: thank you HLTV for letting us scrape your website, your content rocks and for decades it's been the go-to place everyone goes when we talk about Counter-Strike.)
+- [puppeteer-extra-plugin-stealth](https://github.com/berstend/puppeteer-extra/tree/master/packages/puppeteer-extra-plugin-stealth) required to scrape HLTV's website (🙏 thank you HLTV for letting us scrape your website, your content rocks and for decades it's been the go-to place everyone goes when we talk about Counter-Strike.)
 - Cached article analysis in JSON files (so my OpenAI billing doesn't skyrocket)
 - Back feeding results from the championship for the next rounds.
 
