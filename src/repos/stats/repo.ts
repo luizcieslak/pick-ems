@@ -69,6 +69,7 @@ export class TeamStatsRepo {
 					// wins, draw, losses,
 					'Kill death ratio': kdRatioString,
 				})
+				TeamStatsRepo.teamStats.push(teamStat)
 			}
 
 			console.log('team stat', team, type, teamStat)
