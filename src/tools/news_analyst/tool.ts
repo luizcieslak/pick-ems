@@ -1,14 +1,8 @@
 import * as fs from 'fs/promises'
 import * as path from 'path'
-import { llm } from '../../utils'
+import { fileExists, llm } from '../../utils'
 import { SYSTEM_PROMPT } from './prompt'
 import { SCHEMA } from './schema'
-
-const fileExists = (path: string) =>
-	fs.stat(path).then(
-		() => true,
-		() => false
-	)
 
 export type NewsAnalysis = (typeof SCHEMA)['type']
 

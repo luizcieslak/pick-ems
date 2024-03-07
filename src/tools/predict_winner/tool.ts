@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises'
 import * as path from 'path'
-import { llm } from '../../utils'
+import { fileExists, llm } from '../../utils'
 import { SYSTEM_PROMPT } from './prompt'
 import { SCHEMA } from './schema'
 import { Match } from '../../repos'
