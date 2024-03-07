@@ -74,6 +74,15 @@ export async function closeBrowser(): Promise<void> {
 	CONTEXT_SINGLETON = null
 }
 
+export async function acceptCookies(url: string) {
+	const browser = await getBrowserInstance()
+	await browser.goto(url)
+
+	// accept cookies
+	const allowAllCookies = browser.locator('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll')
+	await allowAllCookies.click()
+}
+
 export async function logInOnce(url: string) {
 	const browser = await getBrowserInstance()
 	await browser.goto(url)
@@ -82,20 +91,18 @@ export async function logInOnce(url: string) {
 	const allowAllCookies = browser.locator('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll')
 	await allowAllCookies.click()
 
-	// // log in
-	// const signin = browser.locator('.navsignin')
-	// signin.click()
-	// const loginInput = browser.getByPlaceholder('Username').locator('visible=true')
-	// await loginInput.pressSequentially(process.env.HLTV_LOGIN ?? '')
-	// const pwInput = browser.getByPlaceholder('Password')
-	// await pwInput.pressSequentially(process.env.HLTV_PASSWORD ?? '')
-	// const button = browser.locator('button.login-button.button')
-	// await button.click()
+	// log in
+	const signin = browser.locator('.navsignin')
+	signin.click()
+	const loginInput = browser.getByPlaceholder('Username').locator('visible=true')
+	await loginInput.pressSequentially(process.env.HLTV_LOGIN ?? '')
+	const pwInput = browser.getByPlaceholder('Password')
+	await pwInput.pressSequentially(process.env.HLTV_PASSWORD ?? '')
+	const button = browser.locator('button.login-button.button')
+	await button.click()
 	// End of authentication steps.
-	// await browser.context().storageState({ path: authFile })
-	// await browser.waitForTimeout(10000)
-	console.log('Logged in successfully')
-	FIRST_TIME = false
+	await browser.context().storageState({ path: authFile })
+	await browser.waitForTimeout(10000)
 }
 
 /**
@@ -107,8 +114,11 @@ export async function logInOnce(url: string) {
  */
 export async function navigateTo(url: string, waitForVisible: string): Promise<Locator> {
 	if (FIRST_TIME) {
-		console.log('First time navigating, login first.')
-		await logInOnce(url)
+		console.log('First time navigating, accepting cookies.')
+		await acceptCookies(url)
+		// it seems logging in is not necessary anymore, skipping.
+		// await logInOnce(url)
+		FIRST_TIME = false
 	}
 
 	const browser = await getBrowserInstance()
