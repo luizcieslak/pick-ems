@@ -1,3 +1,4 @@
+import { ChampionshipRepo, ChampionshipStats } from '../championship'
 import { ArticleRepo, Article } from '../articles'
 import { TeamStatsRepo, TeamStats, TeamStatType, MatchHistory } from '../stats'
 /**
@@ -63,5 +64,16 @@ export class Match {
 		const repo = new TeamStatsRepo()
 
 		return repo.findMatchHistory(teams)
+	}
+
+	/**
+	 * Get team's results of the current championship.
+	 *
+	 */
+	public async championshipStats(): Promise<ChampionshipStats[]> {
+		const teams = [this.away, this.home]
+		const repo = new ChampionshipRepo()
+
+		return repo.findTeamsResults(teams)
 	}
 }
