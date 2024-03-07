@@ -9,14 +9,29 @@ import {
 } from '../../repos'
 import { toMarkdown, appendTable } from '../../utils'
 
+type Stage = 'challenger' | 'legends' | 'playoffs'
+
+const stageDescription: Record<Stage, string> = {
+	challenger:
+		'16 teams face each other in a Swiss format. The top 8 teams are classified to the next stage and the bottom 8 are eliminated. Elimination and advancements matches are in a Best of 3 format where the others are in a Best of 1 format.',
+	legends:
+		'16 teams face each other in a Swiss format. The top 8 teams are classified to the next stage and the bottom 8 are eliminated. Elimination and advancements matches are in a Best of 3 format where the others are in a Best of 1 format.',
+	playoffs: '8 teams face each other in a single-elimination bracket. All matches are in a Best of 3 format.',
+}
+
 export const SYSTEM_PROMPT = (
 	stats: { [key in TeamStatType]: TeamStats[] },
 	match: Match,
 	articles: Article[],
 	matchHistory: MatchHistory[],
-	championshipStats: ChampionshipStats[]
+	championshipStats: ChampionshipStats[],
+	stage: Stage
 ) => `
-You are an expert at choosing winning Counter-Strike teams in a "pick ems" competition. The teams are playing in a championship called "PGL CS2 Major Championship". This is just for fun between friends. There is no betting or money to be made, but you will scrutinize your answer and think carefully.
+You are an expert at choosing winning Counter-Strike teams in a "pick ems" competition. The teams are playing in a championship called "PGL CS2 Major Championship". This championship is divided in three stages: Challenger, Legends and Playoffs. We currently are in the ${stage} stage in which ${
+	stageDescription[stage]
+} This is going to be a Best of ${match.bestOf}.
+
+This is just for fun between friends. There is no betting or money to be made, but you will scrutinize your answer and think carefully.
 
 The user will provide you a JSON blob of two teams of the form (for example):
 
@@ -36,11 +51,11 @@ You will evaluate the statistics and articles and explain step-by-step why you t
 ${
 	championshipStats.length === 2
 		? `
-			In this championship, this is how both teams are performing:
+In this championship, this is how both teams are performing:
 
-			Championship results
-			====================================
-			${toMarkdown(appendTable(championshipStats[0]!.toTable(), championshipStats[1]!.toTable()))}
+Championship results
+====================================
+${toMarkdown(appendTable(championshipStats[0]!.toTable(), championshipStats[1]!.toTable()))}
 			`
 		: ''
 }

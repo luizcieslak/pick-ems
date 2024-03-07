@@ -23,7 +23,7 @@ export async function predictWinner(match: Match, cacheResponse = true): Promise
 	// get championship stats
 	const championshipStats = await match.championshipStats()
 
-	const systemPrompt = SYSTEM_PROMPT(stats, match, articles, matchHistory, championshipStats)
+	const systemPrompt = SYSTEM_PROMPT(stats, match, articles, matchHistory, championshipStats, 'challenger')
 	const response = await llm(systemPrompt, match, SCHEMA)
 
 	if (cacheResponse) {
