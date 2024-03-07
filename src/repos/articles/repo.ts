@@ -62,21 +62,18 @@ export class ArticleRepo {
 		// 3) in homepage, get a list of URLs
 		if (teams.length < 2) throw new Error('Not enough Teams in fetchFromMatchTeams')
 
-		// @ts-ignore teams[0] is not undefined
-		const urlsTeam0 = await getTeamHeadlineUrls(teams[0])
-		// @ts-ignore teams[1] is not undefined
-		const urlsTeam1 = await getTeamHeadlineUrls(teams[1])
+		const urlsTeam0 = await getTeamHeadlineUrls(teams[0]!)
+		const urlsTeam1 = await getTeamHeadlineUrls(teams[1]!)
 
 		console.log('articles list', JSON.stringify([...urlsTeam0, ...urlsTeam1], null, 2))
 
 		// NOTE: We explicitly use a for-loop instead of `Promise.all` here because
-		// we want to force sequential execution (instead of paralle6l) because these are
+		// we want to force sequential execution (instead of parallel) because these are
 		// all sharing the same browser instance.
 		const articles: Article[] = []
 		for (const url of urlsTeam0) {
 			try {
-				// @ts-ignore teams[0] is not undefined
-				const article = await this.fetchOne(url, teams[0])
+				const article = await this.fetchOne(url, teams[0]!)
 				articles.push(article)
 			} catch (e) {
 				// Sometimes things timeout or a rogue headline sneaks in
