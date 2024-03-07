@@ -96,8 +96,16 @@ ${article.summary}
 	.join('\n')}`
 }
 
-Here are the this same match results from the past:
+${
+	matchHistory.length > 0
+		? `
+Here are this same matchup results from the past:
 ${toMarkdown(toTable(matchHistory))}
+
+`
+		: ''
+}
+
 
 The team name you choose *MUST* be one of the following:
   * ${match.home}
