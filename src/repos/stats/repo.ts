@@ -129,7 +129,9 @@ export class TeamStatsRepo {
 	public async findByTeamAndType(team: string, type: StatType): Promise<TeamStats | null> {
 		console.log('finding stats for', team, 'type of', type)
 		// check if there's already stats for this team
-		const teamStat = TeamStatsRepo.teamStats.find(teamStats => teamStats.team === team)
+		const teamStat = TeamStatsRepo.teamStats.find(
+			teamStats => teamStats.team === team && teamStats.type === type
+		)
 		if (teamStat) {
 			return teamStat
 		}
