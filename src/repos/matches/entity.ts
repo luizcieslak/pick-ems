@@ -1,6 +1,9 @@
 import { ChampionshipRepo, ChampionshipStats } from '../championship'
 import { ArticleRepo, Article } from '../articles'
 import { TeamStatsRepo, TeamStats, TeamStatType, MatchHistory } from '../stats'
+
+type BestOf = '1' | '3' | '5'
+
 /**
  * A match up between two teams.
  *
@@ -12,9 +15,10 @@ export class Match {
 	 *
 	 * @param away The away team.
 	 * @param home The home team.
+	 * @param bestOf 1, 3 or 5
 	 * @returns A new instance of Match.
 	 */
-	constructor(public away: string, public home: string) {}
+	constructor(public away: string, public home: string, public bestOf: BestOf) {}
 
 	/**
 	 * Get the list of articles associated with the given teams in the match.
