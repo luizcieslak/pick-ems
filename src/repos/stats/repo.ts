@@ -7,11 +7,6 @@ const WAIT_FOR = '.contentCol'
 const BASE_URL_SEARCH = 'https://www.hltv.org/search'
 const SELECTOR_SEARCH = 'td a[href^="/team"]'
 
-// const SOURCES: { [key in StatType]: string } = {
-// 	[StatType.TEAM_STATS]: 'https://www.hltv.org/stats/teams/',
-// 	// [StatType.EVENT_HISTORY]: `https://www.hltv.org/stats/teams/events/9565/vitality?startDate=2023-10-18&endDate=2024-01-18`,
-// }
-
 /**
  * A repository for retrieving historical stats for each team across
  * KDA ratio and win rate.
@@ -199,10 +194,8 @@ export class TeamStatsRepo {
 		console.log('finding match history for', teams)
 		// check if there's already match history for both teams here
 
-		// @ts-ignore teams[0] is not undefined
-		const team0id = await this.getTeamId(teams[0])
-		// @ts-ignore teams[1] is not undefined
-		const team1id = await this.getTeamId(teams[1])
+		const team0id = await this.getTeamId(teams[0]!)
+		const team1id = await this.getTeamId(teams[1]!)
 
 		return this.getTeamsMatchHistory(team0id, team1id)
 	}
