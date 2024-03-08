@@ -126,7 +126,7 @@ export async function navigateTo(url: string, waitForVisible: string): Promise<L
 	await browser.goto(url)
 
 	const container = browser.locator(waitForVisible)
-	await container.waitFor({ state: 'visible' })
+	// await container.waitFor({ state: 'visible' })
 
 	return container
 }
