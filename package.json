@@ -51,7 +51,7 @@
 	"dependencies": {
 		"dotenv": "^16.3.1",
 		"openai": "^4.24.7",
-		"playwright": "^1.41.1",
+		"playwright": "^1.42.1",
 		"playwright-extra": "^4.3.6",
 		"puppeteer-extra-plugin-stealth": "^2.11.2",
 		"tslib": "^2.5.0"
