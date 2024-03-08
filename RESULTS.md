@@ -56,15 +56,19 @@ Used https://majors.im/24copenhagen website as a helper
 
 ### Round 5
 
-| Higher Seed | Lower seed   | Format | Winner |
-| ----------- | ------------ | ------ | ------ |
-| Amkal       | Eternal Fire | bo3    |        |
-| Heroic      | 9 Pandas     | bo3    |        |
-| Imperial    | SAW          | bo3    |        |
+| Higher Seed | Lower seed   | Format | Winner       |
+| ----------- | ------------ | ------ | ------------ |
+| Amkal       | Eternal Fire | bo3    | Eternal Fire |
+| Heroic      | 9 Pandas     | bo3    | Heroic       |
+| Imperial    | SAW          | bo3    | Imperial     |
 
 ### Results
 
 1. ENCE 3-0
 2. Cloud9 3-0
-3. FURIA 3-1
-4. TheMongolZ 3-1
+3. TheMongolZ 3-1
+4. FURIA 3-1
+5. Apeks 3-1
+6. Heroic 3-2
+7. Imperial 3-2
+8. Eternal Fire 3-2
