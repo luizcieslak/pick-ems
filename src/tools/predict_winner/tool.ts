@@ -47,7 +47,13 @@ export async function predictWinner(match: Match, cacheResponse = true): Promise
 		const stat = JSON.parse(file) as ChampionshipStat
 
 		stat.wins += 1
-		stat['win over'] += `, ${response.losingTeam}`
+
+		if (stat['win over'] === '') {
+			stat['win over'] = response.losingTeam
+		} else {
+			stat['win over'] += `, ${response.losingTeam}`
+		}
+
 		await fs.writeFile(winTeamPath, JSON.stringify(stat), 'utf-8')
 	} else {
 		const stat: ChampionshipStat = {
@@ -67,7 +73,12 @@ export async function predictWinner(match: Match, cacheResponse = true): Promise
 		const stat = JSON.parse(file) as ChampionshipStat
 
 		stat.losses += 1
-		stat['loss over'] += `, ${response.winningTeam}`
+
+		if (stat['loss over'] === '') {
+			stat['loss over'] = response.winningTeam
+		} else {
+			stat['loss over'] += `, ${response.winningTeam}`
+		}
 		await fs.writeFile(loserTeamPath, JSON.stringify(stat), 'utf-8')
 	} else {
 		const stat: ChampionshipStat = {
