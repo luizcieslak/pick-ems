@@ -72,3 +72,74 @@ Used https://majors.im/24copenhagen website as a helper
 6. Heroic 3-2
 7. Imperial 3-2
 8. Eternal Fire 3-2
+
+## Legends Stage
+
+### Round 1
+
+| Higher Seed | Lower seed   | Format | Winner     |
+| ----------- | ------------ | ------ | ---------- |
+| FaZe        | ENCE         | bo1    | FaZe       |
+| Spirit      | Cloud9       | bo1    | Spirit     |
+| Vitality    | TheMongolZ   | bo1    | Vitality   |
+| MOUZ        | FURIA        | bo1    | MOUZ       |
+| Complexity  | Apeks        | bo1    | Complexity |
+| Virtus.pro  | Heroic       | bo1    | Virtus.pro |
+| NAVI        | Imperial     | bo1    | Imperial   |
+| G2          | Eternal Fire | bo1    | G2         |
+
+### Round 2
+
+| Higher Seed | Lower seed   | Format | Winner     |
+| ----------- | ------------ | ------ | ---------- |
+| FaZe        | Imperial     | bo1    | FaZe       |
+| Spirit      | G2           | bo1    | Spirit     |
+| Vitality    | Virtus.pro   | bo1    | Vitality   |
+| MOUZ        | Complexity   | bo1    | MOUZ       |
+| NAVI        | Eternal Fire | bo1    | NAVI       |
+| ENCE        | Heroic       | bo1    | ENCE       |
+| Cloud9      | Apeks        | bo1    | Cloud9     |
+| TheMongolZ  | FURIA        | bo1    | TheMongolZ |
+
+### Round 3
+
+| Higher Seed | Lower seed   | Format | Winner       |
+| ----------- | ------------ | ------ | ------------ |
+| FaZe        | MOUZ         | bo3    | FaZe         |
+| Spirit      | Vitality     | bo3    | Spirit       |
+| Imperial    | TheMongolZ   | bo1    | TheMongolZ   |
+| Complexity  | NAVI         | bo1    | NAVI         |
+| Virtus.pro  | Cloud9       | bo1    | Cloud9       |
+| G2          | ENCE         | bo1    | ENCE         |
+| FURIA       | Eternal Fire | bo3    | Eternal Fire |
+| Apeks       | Heroic       | bo3    | Heroic       |
+
+### Round 4
+
+| Higher Seed | Lower seed   | Format | Winner     |
+| ----------- | ------------ | ------ | ---------- |
+| Vitality    | NAVI         | bo3    | Vitality   |
+| ENCE        | TheMongolZ   | bo3    | ENCE       |
+| MOUZ        | Cloud9       | bo3    | MOUZ       |
+| Imperial    | Eternal Fire | bo3    | Imperial   |
+| G2          | Heroic       | bo3    | G2         |
+| Virtus.pro  | Complexity   | bo3    | Virtus.pro |
+
+### Round 5
+
+| Higher Seed | Lower seed | Format | Winner     |
+| ----------- | ---------- | ------ | ---------- |
+| Cloud9      | NAVI       | bo3    | NAVI       |
+| G2          | Imperial   | bo3    | Imperial   |
+| TheMongolZ  | Virtus.pro | bo3    | Virtus.pro |
+
+### Results
+
+1. FaZe 3-0
+2. Spirit 3-0
+3. Vitality 3-1
+4. ENCE 3-1
+5. MOUZ 3-2
+6. Imperial 3-2
+7. NAVI 3-2
+8. Virtus.pro 3-2
