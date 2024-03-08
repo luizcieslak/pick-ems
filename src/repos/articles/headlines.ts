@@ -38,10 +38,15 @@ export async function getTeamHeadlineUrls(team: string, limit = 10): Promise<URL
 		.filter(
 			href =>
 				href &&
-				!href.includes('fantasy-game') &&
+				// Articles not relevant to predict a winner
+				// HLTV fantasy game articles
+				!href.includes('fantasy') &&
+				// championship announcements and schedule
+				!href.includes('announced') &&
+				!href.endsWith('revealed') &&
 				!href.includes('schedule') &&
 				!href.includes('team-list') &&
-				!href.endsWith('revealed') &&
+				// general guides
 				!href.endsWith('guide')
 		)
 		.map(href => new URL(href || '', BASE_URL_SEARCH))
