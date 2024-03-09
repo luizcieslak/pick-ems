@@ -18,9 +18,9 @@ export class Article {
 	 */
 	constructor(
 		public title: string,
-		public content: string,
+		// public content: string,
 		public summary: string,
-		public url: URL,
+		// public url: URL,
 		public primaryTeam: string
 	) {}
 }

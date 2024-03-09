@@ -1,16 +1,11 @@
 import { URL } from 'url'
-import { navigateTo, distinct } from '../../utils'
+import { navigateTo } from '../../utils'
 import { Locator } from 'playwright'
 
-/**
- * Crawls the front page for HLTV news and grabs the URLs for each headline.
- */
-// export async function getHeadlineUrls(): Promise<URL[]> {
-// 	const locator = await navigateTo(BASE_URL, WAIT_FOR)
-// 	const headlines = await locator.locator(SELECTOR).all()
-// 	const hrefs = await Promise.all(headlines.map(async headline => headline.getAttribute('href')))
-// 	return distinct(hrefs).map(href => new URL(href || '', BASE_URL))
-// }
+export interface HLTVArticle {
+	url: URL
+	title: string | undefined
+}
 
 const BASE_URL_SEARCH = 'https://www.hltv.org/search'
 const SELECTOR_SEARCH = 'td a[href^="/team"]'
@@ -42,7 +37,7 @@ const WAIT_FOR = '.contentCol'
 /**
  * Crawls the search page for HLTV news for a team in specific and grabs the URLs for each headline.
  */
-export async function getTeamHeadlineUrls(team: string, limit = 10): Promise<URL[]> {
+export async function getTeamHeadlines(team: string, limit = 10): Promise<HLTVArticle[]> {
 	const teamPage = await getTeamPage(team)
 	const locator = await navigateTo(`${BASE_URL}${teamPage}#tab-newsBox`, WAIT_FOR)
 	const members = await getTeamMembers(locator) // add coach here
@@ -52,7 +47,7 @@ export async function getTeamHeadlineUrls(team: string, limit = 10): Promise<URL
 
 	const anchors = await Promise.all(
 		headlines.map(async headline => ({
-			title: await headline.textContent(),
+			title: (await headline.innerText()).split('\n')[1],
 			href: await headline.getAttribute('href'),
 		}))
 	)
@@ -67,7 +62,9 @@ export async function getTeamHeadlineUrls(team: string, limit = 10): Promise<URL
 		)
 	})
 
-	return result.map(anchor => new URL(anchor.href || '', BASE_URL_SEARCH)).slice(0, limit)
+	return result
+		.map(anchor => ({ url: new URL(anchor.href || '', BASE_URL_SEARCH), title: anchor.title }))
+		.slice(0, limit)
 
 	// also to decrease the change of rate limit,
 	// the cached article should be return before accessing the page.

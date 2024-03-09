@@ -1,8 +1,10 @@
+import * as fs from 'fs/promises'
+import * as path from 'path'
 import { Article } from './entity'
-import { getTeamHeadlineUrls } from './headlines'
-import { navigateTo } from '../../utils'
+import { HLTVArticle, getTeamHeadlines } from './headlines'
+import { fileExists, navigateTo } from '../../utils'
 import { Locator } from 'playwright'
-import { newsAnalyst } from '../../tools'
+import { NewsAnalysis, newsAnalyst } from '../../tools'
 
 const WAIT_FOR = 'article.newsitem'
 const ARTICLE_TITLE = 'h1.headline'
@@ -62,31 +64,20 @@ export class ArticleRepo {
 		// 3) in homepage, get a list of URLs
 		if (teams.length < 2) throw new Error('Not enough Teams in fetchFromMatchTeams')
 
-		const urlsTeam0 = await getTeamHeadlineUrls(teams[0]!)
-		const urlsTeam1 = await getTeamHeadlineUrls(teams[1]!)
+		const articlesList = [...(await getTeamHeadlines(teams[0]!)), ...(await getTeamHeadlines(teams[1]!))]
 
-		console.log('articles list', JSON.stringify([...urlsTeam0, ...urlsTeam1], null, 2))
+		console.log('articles list', JSON.stringify(articlesList, null, 2))
+
+		debugger
 
 		// NOTE: We explicitly use a for-loop instead of `Promise.all` here because
 		// we want to force sequential execution (instead of parallel) because these are
 		// all sharing the same browser instance.
 		const articles: Article[] = []
-		for (const url of urlsTeam0) {
+		for (const article of articlesList) {
 			try {
-				const article = await this.fetchOne(url, teams[0]!)
-				articles.push(article)
-			} catch (e) {
-				// Sometimes things timeout or a rogue headline sneaks in
-				// that is actually an ad. We ignore it and move on.
-				continue
-			}
-		}
-
-		for (const url of urlsTeam1) {
-			try {
-				// @ts-ignore teams[0] is not undefined
-				const article = await this.fetchOne(url, teams[1])
-				articles.push(article)
+				const result = await this.fetchOne(article, teams[0]!)
+				articles.push(result)
 			} catch (e) {
 				// Sometimes things timeout or a rogue headline sneaks in
 				// that is actually an ad. We ignore it and move on.
@@ -138,16 +129,30 @@ export class ArticleRepo {
 	 * @param url The URL of the article to scrape.
 	 * @returns {Promise<Article>} The article.
 	 */
-	private async fetchOne(url: URL, team: string): Promise<Article> {
-		// 4) for each URL, get the title, content
-		// feed it into OpenAI
-		const page = await navigateTo(url.toString(), WAIT_FOR)
+	private async fetchOne(article: HLTVArticle, team: string): Promise<Article> {
+		if (!article.title) throw new Error('Article without an title.')
 
+		const articlesPath = path.join(__filename, '../../../../', 'articles-cached/')
+		const filename = `${team}-${article.title}.json`
+		const filePath = path.join(articlesPath, filename)
+
+		const summaryAlreadyDone = await fileExists(filePath)
+
+		debugger
+
+		if (summaryAlreadyDone) {
+			const file = await fs.readFile(filePath, 'utf-8')
+			console.log('returning cached file for', filePath)
+			const analysis = JSON.parse(file) as NewsAnalysis
+			return new Article(article.title, analysis.summary, team)
+		}
+
+		const page = await navigateTo(article.url.toString(), WAIT_FOR)
 		const title = await this.getTitle(page)
 		const content = await this.getContent(page)
 		const { summary } = await newsAnalyst(title, content, team)
 
-		return new Article(title, content, summary, url, team)
+		return new Article(title, summary, team)
 	}
 
 	/**
@@ -175,6 +180,7 @@ export class ArticleRepo {
 	private async getContent(page: Locator): Promise<string> {
 		const paragraphs = await page.locator(ARTICLE_CONTENT).all()
 		const content = await Promise.all(paragraphs.map(p => p.textContent()))
+		// perhaps we should get the table here?
 		return content.join('\n\n')
 	}
 }
