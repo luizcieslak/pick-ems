@@ -1,5 +1,6 @@
 import { URL } from 'url'
 import { navigateTo, distinct } from '../../utils'
+import { Locator } from 'playwright'
 
 /**
  * Crawls the front page for HLTV news and grabs the URLs for each headline.
@@ -22,6 +23,18 @@ async function getTeamPage(team: string): Promise<string | null> {
 	return hrefs[0] as string | null
 }
 
+const SELECTOR_MEMBERS = '.bodyshot-team a[href^="/player"]'
+const SELECTOR_COACH = '.profile-team-stat a[href^="/coach"] .a-default'
+
+async function getTeamMembers(locator: Locator): Promise<(string | null)[]> {
+	const membersAnchorLink = await locator.locator(SELECTOR_MEMBERS).all()
+	const members = await Promise.all(membersAnchorLink.map(async a => a.getAttribute('title')))
+	const coach = await locator.locator(SELECTOR_COACH).textContent()
+	members.push(coach)
+
+	return members
+}
+
 const BASE_URL = 'https://www.hltv.org'
 const SELECTOR = 'a.subTab-newsArticle'
 const WAIT_FOR = '.contentCol'
@@ -32,24 +45,34 @@ const WAIT_FOR = '.contentCol'
 export async function getTeamHeadlineUrls(team: string, limit = 10): Promise<URL[]> {
 	const teamPage = await getTeamPage(team)
 	const locator = await navigateTo(`${BASE_URL}${teamPage}#tab-newsBox`, WAIT_FOR)
-	const headlines = await locator.locator(`${SELECTOR}:nth-child(-n+${limit + 2})`).all()
-	const hrefs = await Promise.all(headlines.map(async headline => headline.getAttribute('href')))
-	return distinct(hrefs)
-		.filter(
-			href =>
-				href &&
-				// Articles not relevant to predict a winner
-				// HLTV fantasy game articles
-				!href.includes('fantasy') &&
-				// championship announcements and schedule
-				!href.includes('announced') &&
-				!href.endsWith('revealed') &&
-				!href.includes('schedule') &&
-				!href.includes('team-list') &&
-				// general guides
-				!href.endsWith('guide')
+	const members = await getTeamMembers(locator) // add coach here
+
+	// limit should be applied in the end, not in the beginning
+	const headlines = await locator.locator(`${SELECTOR}:nth-child(-n+${limit * 6})`).all()
+
+	const anchors = await Promise.all(
+		headlines.map(async headline => ({
+			title: await headline.textContent(),
+			href: await headline.getAttribute('href'),
+		}))
+	)
+
+	const result = anchors.filter(anchor => {
+		if (!anchor.href) return
+		if (!anchor.title) return
+
+		return (
+			anchor.title.includes(team) ||
+			members.some(member => typeof member === 'string' && anchor.title?.includes(member))
 		)
-		.map(href => new URL(href || '', BASE_URL_SEARCH))
+	})
+
+	return result.map(anchor => new URL(anchor.href || '', BASE_URL_SEARCH)).slice(0, limit)
+
+	// also to decrease the change of rate limit,
+	// the cached article should be return before accessing the page.
+
+	// try also to cache stats? only the ones that won't change as team stats, world ranking and event history
 }
 
 // /**
