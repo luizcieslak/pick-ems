@@ -2,7 +2,7 @@ import * as fs from 'fs/promises'
 import * as path from 'path'
 import { Article } from './entity'
 import { HLTVArticle, getTeamHeadlines } from './headlines'
-import { fileExists, navigateTo } from '../../utils'
+import { fileExists, navigateTo, verboseLog } from '../../utils'
 import { Locator } from 'playwright'
 import { NewsAnalysis, newsAnalyst } from '../../tools'
 
@@ -49,13 +49,13 @@ export class ArticleRepo {
 		const team0List = await getTeamHeadlines(teams[0]!)
 		const team1List = await getTeamHeadlines(teams[1]!)
 
-		console.log(
-			'articles for team 0',
-			team0List.map(article => article.title)
-		)
-		console.log(
-			'articles for team 1',
-			team1List.map(article => article.title)
+		verboseLog(
+			'articles list',
+			JSON.stringify(
+				[...team0List.map(article => article.title), ...team1List.map(article => article.title)],
+				null,
+				2
+			)
 		)
 
 		// NOTE: We explicitly use a for-loop instead of `Promise.all` here because
@@ -105,7 +105,7 @@ export class ArticleRepo {
 
 		if (summaryAlreadyDone) {
 			const file = await fs.readFile(filePath, 'utf-8')
-			console.log('returning cached file for', filePath)
+			verboseLog('returning cached file for article', article.url)
 			const analysis = JSON.parse(file) as NewsAnalysis
 			return new Article(article.title, analysis.summary, team)
 		}

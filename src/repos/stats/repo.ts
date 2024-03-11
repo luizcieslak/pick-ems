@@ -1,4 +1,4 @@
-import { fileExists, navigateTo } from '../../utils'
+import { fileExists, navigateTo, verboseLog } from '../../utils'
 import { TeamStats, TeamStatType as StatType, TeamStatType } from './entity'
 import { MatchHistory } from './gameHistory'
 
@@ -29,7 +29,7 @@ const getCachedStat = async (team: string, type: StatType): Promise<TeamStats | 
 	if (!exists) return
 
 	const file = await fs.readFile(filePath, 'utf-8')
-	console.log('returning cached file for', filePath)
+	verboseLog('returning cached stat for', team, type)
 	const parsed = JSON.parse(file) as TeamStats
 	return new TeamStats(parsed.team, parsed.type, parsed.stats)
 }
@@ -97,8 +97,6 @@ export class TeamStatsRepo {
 				saveStat(teamStat)
 			}
 
-			console.log('team stat', team, type, teamStat)
-
 			return teamStat
 		}
 
@@ -157,11 +155,9 @@ export class TeamStatsRepo {
 	 * @returns {Promise<TeamStats>} The stats for the given team and type.
 	 */
 	public async findByTeamAndType(team: string, type: StatType): Promise<TeamStats | null> {
-		console.log('finding stats for', team, 'type of', type)
 		// check if there's already stats for this team
 		const cachedTeamStat = await getCachedStat(team, type)
 		if (cachedTeamStat) {
-			console.log('returning cached stat for', team, 'of type', type)
 			return cachedTeamStat
 		}
 
@@ -223,7 +219,7 @@ export class TeamStatsRepo {
 	}
 
 	public async findMatchHistory(teams: string[]): Promise<MatchHistory[]> {
-		console.log('finding match history for', teams)
+		verboseLog('finding match history for', teams)
 		// check if there's already match history for both teams here
 
 		const team0id = await this.getTeamId(teams[0]!)

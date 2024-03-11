@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises'
 import * as path from 'path'
-import { fileExists, llm } from '../../utils'
+import { fileExists, llm, verboseLog } from '../../utils'
 import { SYSTEM_PROMPT } from './prompt'
 import { SCHEMA } from './schema'
 
@@ -20,7 +20,6 @@ export async function newsAnalyst(
 	team: string,
 	cacheResponse = true
 ): Promise<NewsAnalysis> {
-	console.log('content size', content.length)
 	const articlesPath = path.join(__filename, '../../../../', 'articles-cached/')
 	const filename = `${team}-${title}.json`
 	const filePath = path.join(articlesPath, filename)
@@ -29,7 +28,7 @@ export async function newsAnalyst(
 
 	if (cacheResponse && summaryAlreadyDone) {
 		const file = await fs.readFile(filePath, 'utf-8')
-		console.log('returning cached file for', filePath)
+		verboseLog('returning cached article for', title)
 		return JSON.parse(file) as NewsAnalysis
 	}
 
@@ -40,7 +39,6 @@ export async function newsAnalyst(
 	const response = await llm(prompt, article, SCHEMA)
 
 	if (cacheResponse) {
-		console.log('saving', filePath)
 		await fs.mkdir(articlesPath, { recursive: true })
 		await fs.writeFile(filePath, JSON.stringify(response), 'utf-8')
 	}

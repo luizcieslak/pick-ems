@@ -17,8 +17,10 @@ export class MatchRepo {
 	public async list(): Promise<Match[]> {
 		if (MatchRepo.matches == null) {
 			MatchRepo.matches = [
-				new Match('FURIA', 'ENCE', '1'),
-				// new Match('FURIA', 'Legacy'),
+				new Match('FaZe', 'Spirit', '5'),
+				// new Match('Spirit', 'Vitality', '3'),
+				// new Match('Spirit', 'Vitality', '3'),
+				// new Match('Spirit', 'Vitality', '3'),
 			]
 		}
 		return MatchRepo.matches

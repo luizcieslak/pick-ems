@@ -2,7 +2,7 @@ import { ChampionshipStats, ChampionshipStats as StatType } from './entity'
 
 import * as fs from 'fs/promises'
 import * as path from 'path'
-import { fileExists } from '../../utils'
+import { fileExists, verboseLog } from '../../utils'
 
 export interface ChampionshipStat {
 	wins: number
@@ -18,8 +18,6 @@ export class ChampionshipRepo {
 	// private static championshipStat: ChampionshipStats
 
 	private async getTeamResults(team: string): Promise<ChampionshipStats | undefined> {
-		console.log('finding championship history for', team)
-
 		const championshipPath = path.join(__filename, '../../../../', 'championship-cached/')
 		const filename = `${team}.json`
 		const filePath = path.join(championshipPath, filename)
@@ -28,7 +26,7 @@ export class ChampionshipRepo {
 
 		if (statAlreadyExists) {
 			const file = await fs.readFile(filePath, 'utf-8')
-			console.log('returning cached file for', filePath)
+			verboseLog('returning cached results for', team)
 			const stat = JSON.parse(file) as ChampionshipStat
 			return new ChampionshipStats(team, stat)
 		}

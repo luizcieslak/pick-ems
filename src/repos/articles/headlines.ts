@@ -59,6 +59,7 @@ export async function getTeamHeadlines(team: string, limit = 10): Promise<HLTVAr
 		if (!anchor.href) return
 		if (!anchor.title) return
 
+		if (anchor.href.includes('former-00nation')) return
 		if (anchor.href.includes('invited')) return
 		if (anchor.href.includes('fantasy')) return
 		if (anchor.href.includes('announced')) return

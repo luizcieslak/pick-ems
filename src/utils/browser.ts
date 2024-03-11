@@ -1,6 +1,7 @@
 import { Browser, BrowserContext, Page, Locator } from 'playwright'
 import { chromium } from 'playwright-extra'
 import { CONFIG } from '../config'
+import { verboseLog } from './log'
 
 // Load the stealth plugin and use defaults (all tricks to hide playwright usage)
 // Note: playwright-extra is compatible with most puppeteer-extra plugins
@@ -8,7 +9,6 @@ const stealth = require('puppeteer-extra-plugin-stealth')()
 
 // Add the plugin to Playwright (any number of plugins can be added)
 chromium.use(stealth)
-console.log('stealh')
 
 let PAGE_SINGLETON: Page | null = null
 let BROWSER_SINGLETON: Browser | null = null
@@ -116,7 +116,7 @@ export async function logInOnce(url: string) {
 export async function navigateTo(url: string, waitForVisible: string): Promise<Locator> {
 	// it seems neither of these functions are necessary anymore, skipping.
 	if (FIRST_TIME) {
-		console.log('First time navigating, accepting cookies and logging in.')
+		verboseLog('First time navigating, accepting cookies and logging in.')
 		await acceptCookies(url)
 		await logInOnce(url)
 		FIRST_TIME = false

@@ -5,6 +5,8 @@ import { SYSTEM_PROMPT } from './prompt'
 import { SCHEMA } from './schema'
 import { ChampionshipStat, Match } from '../../repos'
 
+let winners = ''
+
 /**
  * Predict the winner of a match.
  *
@@ -13,14 +15,10 @@ import { ChampionshipStat, Match } from '../../repos'
  */
 export async function predictWinner(match: Match, cacheResponse = true): Promise<string> {
 	const articles = await match.articles()
-	// 8) get stats
 	const stats = await match.stats()
-	// console.log('stats?', JSON.stringify(stats, null, 2))
 
-	// get match history
 	const matchHistory = await match.matchHistory()
 
-	// get championship stats
 	const championshipStats = await match.championshipStats()
 
 	const systemPrompt = SYSTEM_PROMPT(stats, match, articles, matchHistory, championshipStats, 'challenger')
@@ -30,7 +28,6 @@ export async function predictWinner(match: Match, cacheResponse = true): Promise
 		const matchesPath = path.join(__filename, '../../../../', 'matches-cached/')
 		const filename = `${match.home}-${match.away}.json`
 		const filePath = path.join(matchesPath, filename)
-		console.log(matchesPath)
 		await fs.mkdir(matchesPath, { recursive: true })
 		await fs.writeFile(filePath, JSON.stringify(response), 'utf-8')
 	}
@@ -89,6 +86,9 @@ export async function predictWinner(match: Match, cacheResponse = true): Promise
 		}
 		await fs.writeFile(loserTeamPath, JSON.stringify(stat), 'utf-8')
 	}
+
+	winners += ` ${response.winningTeam} -`
+	console.log('WINNERS', winners)
 
 	return response.winningTeam
 }

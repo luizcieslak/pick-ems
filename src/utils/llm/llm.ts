@@ -2,6 +2,7 @@ import OpenAI from 'openai'
 import { config } from 'dotenv'
 import { JSONSchema } from 'json-schema-to-ts'
 import { SCHEMA } from './schema'
+import { verboseLog } from 'utils/log'
 
 config()
 
@@ -25,12 +26,10 @@ export async function llm<T>(
 	// TODO: There is a lot going on this function. We should
 	// break it up / clean it up.
 
-	if (VERBOSE) {
-		console.log('=============================================')
-		console.log('Starting request to LLM:')
-		console.log('\nSYSTEM:\n', systemPrompt)
-		console.log('\nUSER:\n', JSON.stringify(userPrompt))
-	}
+	verboseLog('=============================================')
+	verboseLog('Starting request to LLM:')
+	verboseLog('\nSYSTEM:\n', systemPrompt)
+	verboseLog('\nUSER:\n', JSON.stringify(userPrompt))
 
 	// We wrap the provided schema in a parent schema that forces
 	// the LLM to think and perform analysis before generating tool
@@ -81,11 +80,9 @@ export async function llm<T>(
 
 	const contentObj = JSON.parse(content)
 
-	if (VERBOSE) {
-		console.log('\nRESPONSE:\n')
-		console.log(JSON.stringify(contentObj, null, 2))
-		console.log('=============================================')
-	}
+	verboseLog('\nRESPONSE:\n')
+	verboseLog(JSON.stringify(contentObj, null, 2))
+	verboseLog('=============================================')
 
 	let conclusion = contentObj.conclusion
 	// Edge case: LLM sometimes might not provide the conclusion required and it will return
