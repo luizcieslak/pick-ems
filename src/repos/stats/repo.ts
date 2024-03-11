@@ -1,19 +1,44 @@
-import { navigateTo } from '../../utils'
+import { fileExists, navigateTo } from '../../utils'
 import { TeamStats, TeamStatType as StatType, TeamStatType } from './entity'
 import { MatchHistory } from './gameHistory'
+
+import * as fs from 'fs/promises'
+import * as path from 'path'
 
 const WAIT_FOR = '.contentCol'
 
 const BASE_URL_SEARCH = 'https://www.hltv.org/search'
 const SELECTOR_SEARCH = 'td a[href^="/team"]'
 
+const saveStat = async (stat: TeamStats) => {
+	const statPath = path.join(__filename, '../../../../', 'stats-cached/')
+	const filename = `${stat.team}-${stat.type}.json`
+	const filePath = path.join(statPath, filename)
+
+	await fs.mkdir(statPath, { recursive: true })
+	await fs.writeFile(filePath, JSON.stringify(stat), 'utf-8')
+}
+
+const getCachedStat = async (team: string, type: StatType): Promise<TeamStats | undefined> => {
+	const statPath = path.join(__filename, '../../../../', 'stats-cached/')
+	const filename = `${team}-${type}.json`
+	const filePath = path.join(statPath, filename)
+
+	const exists = await fileExists(filePath)
+
+	if (!exists) return
+
+	const file = await fs.readFile(filePath, 'utf-8')
+	console.log('returning cached file for', filePath)
+	const parsed = JSON.parse(file) as TeamStats
+	return new TeamStats(parsed.team, parsed.type, parsed.stats)
+}
+
 /**
  * A repository for retrieving historical stats for each team across
  * KDA ratio and win rate.
  */
 export class TeamStatsRepo {
-	private static teamStats: TeamStats[] = []
-
 	private async getTeamStatsPage(team: string): Promise<string | null> {
 		const locator = await navigateTo(`${BASE_URL_SEARCH}?query=${team}`, WAIT_FOR)
 		const headlines = await locator.locator(SELECTOR_SEARCH).all()
@@ -69,7 +94,7 @@ export class TeamStatsRepo {
 					// wins, draw, losses,
 					'Kill death ratio': kdRatioString,
 				})
-				TeamStatsRepo.teamStats.push(teamStat)
+				saveStat(teamStat)
 			}
 
 			console.log('team stat', team, type, teamStat)
@@ -82,9 +107,11 @@ export class TeamStatsRepo {
 			const page = await navigateTo(`https://www.hltv.org${teamPage}`, WAIT_FOR)
 			const worldRanking = await page.locator('.profile-team-stat').first().locator('.right').textContent()
 			if (typeof worldRanking === 'string') {
-				return new TeamStats(team, type, {
+				const teamStat = new TeamStats(team, type, {
 					'World Ranking': worldRanking,
 				})
+				saveStat(teamStat)
+				return teamStat
 			}
 		}
 
@@ -113,7 +140,10 @@ export class TeamStatsRepo {
 				}
 			}
 
-			return new TeamStats(team, type, eventHistoryObj)
+			const teamStat = new TeamStats(team, type, eventHistoryObj)
+			saveStat(teamStat)
+
+			return teamStat
 		}
 
 		return null
@@ -129,11 +159,10 @@ export class TeamStatsRepo {
 	public async findByTeamAndType(team: string, type: StatType): Promise<TeamStats | null> {
 		console.log('finding stats for', team, 'type of', type)
 		// check if there's already stats for this team
-		const teamStat = TeamStatsRepo.teamStats.find(
-			teamStats => teamStats.team === team && teamStats.type === type
-		)
-		if (teamStat) {
-			return teamStat
+		const cachedTeamStat = await getCachedStat(team, type)
+		if (cachedTeamStat) {
+			console.log('returning cached stat for', team, 'of type', type)
+			return cachedTeamStat
 		}
 
 		const stats = await this.fetchTypeByTeam(team, type)
