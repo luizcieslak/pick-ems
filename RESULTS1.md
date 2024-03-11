@@ -143,3 +143,27 @@ Used https://majors.im/24copenhagen website as a helper
 6. Imperial 3-2
 7. NAVI 3-2
 8. Virtus.pro 3-2
+
+## Playoffs
+
+### Quarter finals
+
+| Higher Seed | Lower seed | Format | Winner   |
+| ----------- | ---------- | ------ | -------- |
+| FaZe        | Virtus.pro | bo3    | FaZe     |
+| Spirit      | NAVI       | bo3    | Spirit   |
+| Vitality    | Imperial   | bo3    | Vitality |
+| ENCE        | MOUZ       | bo3    | MOUZ     |
+
+### Semi finals
+
+| Higher Seed | Lower seed | Format | Winner |
+| ----------- | ---------- | ------ | ------ |
+| FaZe        | MOUZ       | bo3    | FaZe   |
+| Spirit      | Vitality   | bo3    | Spirit |
+
+### Finals
+
+| Higher Seed | Lower seed | Format | Winner |
+| ----------- | ---------- | ------ | ------ |
+| FaZe        | Spirit     | bo5    | Spirit |
