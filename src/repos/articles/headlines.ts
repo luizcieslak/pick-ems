@@ -24,8 +24,11 @@ const SELECTOR_COACH = '.profile-team-stat a[href^="/coach"] .a-default'
 async function getTeamMembers(locator: Locator): Promise<(string | null)[]> {
 	const membersAnchorLink = await locator.locator(SELECTOR_MEMBERS).all()
 	const members = await Promise.all(membersAnchorLink.map(async a => a.getAttribute('title')))
-	const coach = await locator.locator(SELECTOR_COACH).textContent()
-	members.push(coach)
+
+	try {
+		const coach = await locator.locator(SELECTOR_COACH).textContent()
+		if (coach) members.push(coach.replace("'", ''))
+	} catch (error) {}
 
 	return members
 }
@@ -40,7 +43,7 @@ const WAIT_FOR = '.contentCol'
 export async function getTeamHeadlines(team: string, limit = 10): Promise<HLTVArticle[]> {
 	const teamPage = await getTeamPage(team)
 	const locator = await navigateTo(`${BASE_URL}${teamPage}#tab-newsBox`, WAIT_FOR)
-	const members = await getTeamMembers(locator) // add coach here
+	const members = await getTeamMembers(locator)
 
 	// limit should be applied in the end, not in the beginning
 	const headlines = await locator.locator(`${SELECTOR}:nth-child(-n+${limit * 6})`).all()
