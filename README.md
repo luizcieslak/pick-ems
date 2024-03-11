@@ -49,17 +49,14 @@ The agents know how to:
 - **Analyze News**: Take a news article and extract:
 
   1. A summary of the article.
-  2. Identify team members
-  3. Whether it refers to the NFL, College, or Fantasy Football.
+  2. key elements that can make the team win - member trades, stats and results.
 
-  We need that last bit because on ESPN's NFL site, a lot of articles get
-  written about things that have nothing to do with the NFL regular season and
-  we want to filter that content out prior to giving it to the LLM.
+  Whenever we provide an article to the agent to summary, we also provide which is the team the agent needs to look for in order to provide the elements above.
 
-- **Predict a Winner**: Given offense, defense, special, and turnover stats
-  along with any relevant news we could find (e.g. injuries), for any
-  given match up we give the LLM the stats and news for the two teams, and
-  have it analyze that data to make a prediction about who will win.
+- **Predict a Winner**: Given both teams that are competing in PGL Major Championship Copenhagen 2024, the format of match they will perform
+  plus each teams Stats: KDA ratio, win rate, event history and matchup history
+  along with any relevant news we can find for them
+  analyze that data to make a prediction about who will win.
 
 ## Getting Started
 
