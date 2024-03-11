@@ -59,6 +59,15 @@ export async function getTeamHeadlines(team: string, limit = 10): Promise<HLTVAr
 		if (!anchor.href) return
 		if (!anchor.title) return
 
+		if (anchor.href.includes('invited')) return
+		if (anchor.href.includes('fantasy')) return
+		if (anchor.href.includes('announced')) return
+		if (anchor.href.endsWith('revealed')) return
+		if (anchor.href.includes('schedule')) return
+		if (anchor.href.includes('team-list')) return
+		// general guides
+		if (anchor.href.endsWith('guide')) return
+
 		return (
 			anchor.title.includes(team) ||
 			members.some(member => typeof member === 'string' && anchor.title?.includes(member))
