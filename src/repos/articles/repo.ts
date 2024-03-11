@@ -23,24 +23,6 @@ export class ArticleRepo {
 	 * @param teams The list of teams to filter by.
 	 * @returns {Promise<Article[]>} The list of articles for the week associated with the given teams.
 	 */
-	// public async findByTeams(teams: string[]): Promise<Article[]> {
-	// 	const articles = await this.list()
-	// 	// 6) filter the articles by the team in the match.
-	// 	return articles.filter(article => teams.includes(article.primaryTeam))
-	// }
-
-	// /**
-	//  * Get the list of articles associated with current headlines.
-	//  *
-	//  * @returns {Promise<Article[]>} The list of articles for current headlines.
-	//  */
-	// public async list(): Promise<Article[]> {
-	// 	if (ArticleRepo.articles == null) {
-	// 		// 2) from homepage, get a list of articles
-	// 		ArticleRepo.articles = await this.fetchAll()
-	// 	}
-	// 	return ArticleRepo.articles
-	// }
 
 	public async findByTeams(teams: string[]): Promise<Article[]> {
 		// check if there's already articles for these teams
@@ -64,17 +46,24 @@ export class ArticleRepo {
 		// 3) in homepage, get a list of URLs
 		if (teams.length < 2) throw new Error('Not enough Teams in fetchFromMatchTeams')
 
-		const articlesList = [...(await getTeamHeadlines(teams[0]!)), ...(await getTeamHeadlines(teams[1]!))]
+		const team0List = await getTeamHeadlines(teams[0]!)
+		const team1List = await getTeamHeadlines(teams[1]!)
 
-		console.log('articles list', JSON.stringify(articlesList, null, 2))
-
-		debugger
+		console.log(
+			'articles for team 0',
+			team0List.map(article => article.title)
+		)
+		console.log(
+			'articles for team 1',
+			team1List.map(article => article.title)
+		)
 
 		// NOTE: We explicitly use a for-loop instead of `Promise.all` here because
 		// we want to force sequential execution (instead of parallel) because these are
 		// all sharing the same browser instance.
 		const articles: Article[] = []
-		for (const article of articlesList) {
+
+		for (const article of team0List) {
 			try {
 				const result = await this.fetchOne(article, teams[0]!)
 				articles.push(result)
@@ -85,43 +74,19 @@ export class ArticleRepo {
 			}
 		}
 
+		for (const article of team1List) {
+			try {
+				const result = await this.fetchOne(article, teams[1]!)
+				articles.push(result)
+			} catch (e) {
+				// Sometimes things timeout or a rogue headline sneaks in
+				// that is actually an ad. We ignore it and move on.
+				continue
+			}
+		}
+
 		return articles
 	}
-
-	// /**
-	//  * Navigates to the page containing current headlines and for each headline
-	//  * navigates to the article page and scrapes the article.
-	//  *
-	//  * @returns {Promise<Article[]>} The list of articles for current headlines.
-	//  */
-	// private async fetchAll(): Promise<Article[]> {
-	// 	// 3) in homepage, get a list of URLs
-	// 	let urls = await getHeadlineUrls()
-	// 	// urls = urls.slice(5, 6)
-	// 	console.log(
-	// 		'urls',
-	// 		urls.map(u => u.href)
-	// 	)
-
-	// 	// NOTE: We explicitly use a for-loop instead of `Promise.all` here because
-	// 	// we want to force sequential execution (instead of parallel) because these are
-	// 	// all sharing the same browser instance.
-	// 	const articles: Article[] = []
-	// 	for (const url of urls) {
-	// 		try {
-	// 			const article = await this.fetchOne(url)
-	// 			articles.push(article)
-	// 		} catch (e) {
-	// 			// Sometimes things timeout or a rogue headline sneaks in
-	// 			// that is actually an ad. We ignore it and move on.
-	// 			continue
-	// 		}
-	// 	}
-
-	// 	console.log('articles fetchall', articles)
-
-	// 	return articles
-	// }
 
 	/**
 	 * Navigates to the given URL and scrapes the article.
@@ -137,8 +102,6 @@ export class ArticleRepo {
 		const filePath = path.join(articlesPath, filename)
 
 		const summaryAlreadyDone = await fileExists(filePath)
-
-		debugger
 
 		if (summaryAlreadyDone) {
 			const file = await fs.readFile(filePath, 'utf-8')
