@@ -73,6 +73,14 @@ Used https://majors.im/24copenhagen website as a helper
 7. Imperial 3-2
 8. Eternal Fire 3-2
 
+9. SAW 2-3
+10. Amkal 2-3
+11. 9 Pandas 2-3
+12. KOI 1-3
+13. ECSTATIC 1-3
+14. Legacy 0-3
+15. Lynn Vision 0-3
+
 ## Legends Stage
 
 ### Round 1
@@ -143,6 +151,15 @@ Used https://majors.im/24copenhagen website as a helper
 6. Imperial 3-2
 7. NAVI 3-2
 8. Virtus.pro 3-2
+
+9. Cloud9 2-3
+10. TheMongolZ 2-3
+11. G2 2-3
+12. Complexity 1-3
+13. Heroic 1-3
+14. Eternal Fire 1-3
+15. FURIA 0-3
+16. Apeks 0-3
 
 ## Playoffs
 
