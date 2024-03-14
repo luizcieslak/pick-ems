@@ -73,6 +73,7 @@ Used https://majors.im/24copenhagen website as a helper
 7. TheMongolZ 3-2
 8. Apeks 3-2
 
+
 9. FURIA 2-3
 10. 9 Pandas 2-3
 11. paiN 2-3
@@ -152,6 +153,7 @@ Used https://majors.im/24copenhagen website as a helper
 6. G2 3-2
 7. Eternal Fire 3-2
 8. Heroic 3-2
+
 
 9. NAVI 2-3
 10. SAW 2-3
