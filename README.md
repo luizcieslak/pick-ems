@@ -6,13 +6,16 @@ The code was modified to predict specifically 2024 PGL Major Copenhagen games an
 
 Each round of the competition is fed manually.
 
-<!-- Add major results here afterwards -->
+## Results
+
+* [1st execution](/RESULTS1.md)
+* [2nd execution](/RESULTS2.md) with an improvement on how to fetch articles from HLTV.
 
 ## Additional features added from the fork
 
 - [puppeteer-extra-plugin-stealth](https://github.com/berstend/puppeteer-extra/tree/master/packages/puppeteer-extra-plugin-stealth) required to scrape HLTV's website (🙏 thank you HLTV for letting us scrape your website, your content rocks and for decades it's been the go-to place everyone goes when we talk about Counter-Strike.)
 - Cached article analysis in JSON files (so my OpenAI billing doesn't skyrocket)
-- Back feeding results from the championship for the next rounds.
+- feeding back results in each round as another stat for the subsequent ones.
 
 ## How Does It Work?
 
@@ -34,10 +37,10 @@ themselves to code due to their ambiguous or difficult-to-code nature.
 
 The scrapers know how to retrieve:
 
-- [The list of all NFL teams.](https://www.espn.com/nfl/teams)
-- [The list of all matches for the week.](https://fantasy.espn.com/games/nfl-pigskin-pickem-2023/make-picks)
-- [Offense, Defense, Turnover, and Special statistics for all teams.](https://www.espn.com/nfl/stats/team)
-- [Headlines from the front page](https://www.espn.com/nfl/) and the content of the articles for those headlines.
+- The articles mentioning a determined CS2 team. [Example for FaZe team](https://www.hltv.org/team/6667/faze#tab-newsBox)
+- Overview Stats for a CS2 team, from June 18th 2023 until now. [Example for NAVI team.](https://www.hltv.org/stats/teams/4608/natus-vincere?startDate=2023-06-18&endDate=2025-01-18)
+- Event history a CS2 team, from June 18th 2023 until now. [Example for NAVI team.](https://www.hltv.org/stats/teams/events/4608/natus-vincere?startDate=2023-06-18&endDate=2025-01-18)
+- Previous matchups between two teams, from June 18th 2023 until now. [Example for FaZe versus NAVI](https://www.hltv.org/results?startDate=2023-06-18&endDate=2025-06-18&team=6667&team=4608&requireAllTeams=)
 
 ## Agents
 
@@ -45,18 +48,15 @@ The agents know how to:
 
 - **Analyze News**: Take a news article and extract:
 
-  1. The primary team it is written about
-  2. A summary of the article
-  3. Whether it refers to the NFL, College, or Fantasy Football.
+  1. A summary of the article.
+  2. key elements that can make the team win - member trades, stats and results.
 
-  We need that last bit because on ESPN's NFL site, a lot of articles get
-  written about things that have nothing to do with the NFL regular season and
-  we want to filter that content out prior to giving it to the LLM.
+  Whenever we provide an article to the agent to summary, we also provide which is the team the agent needs to look for in order to provide the elements above.
 
-- **Predict a Winner**: Given offense, defense, special, and turnover stats
-  along with any relevant news we could find (e.g. injuries), for any
-  given match up we give the LLM the stats and news for the two teams, and
-  have it analyze that data to make a prediction about who will win.
+- **Predict a Winner**: Given both teams that are competing in PGL Major Championship Copenhagen 2024, the format of match they will perform
+  plus each teams Stats: KDA ratio, win rate, event history and matchup history
+  along with any relevant news we can find for them
+  analyze that data to make a prediction about who will win.
 
 ## Getting Started
 
