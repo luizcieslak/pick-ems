@@ -10,6 +10,7 @@ Each round of the competition is fed manually.
 
 * [1st execution](/RESULTS1.md)
 * [2nd execution](/RESULTS2.md) with an improvement on how to fetch articles from HLTV.
+* [3rd execution](/RESULTS3.md) after GamerLegion announcement to replace 9 Pandas.
 
 ## Additional features added from the fork
 
