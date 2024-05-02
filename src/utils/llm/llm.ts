@@ -2,7 +2,7 @@ import OpenAI from 'openai'
 import { config } from 'dotenv'
 import { JSONSchema } from 'json-schema-to-ts'
 import { SCHEMA } from './schema'
-import { verboseLog } from 'utils/log'
+import { verboseLog } from '../../utils'
 
 config()
 
