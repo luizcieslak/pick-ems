@@ -2,14 +2,47 @@
 
 This is a fork of Steve Krenzel's [pick-ems](https://github.com/stevekrenzel/pick-ems) LLM agent built on top of OpenAI that predicts winners for CS2 games.
 
-The code was modified to predict specifically 2024 PGL Major Copenhagen games and therefore also predict a winner of this championship.
+The code was modified to predict specifically 2024 PGL Major Copenhagen games and therefore also tried to predict a winner of this championship.
 
 Each round of the competition is fed manually.
 
 ## Results
 
-* [1st execution](/RESULTS1.md)
-* [2nd execution](/RESULTS2.md) with an improvement on how to fetch articles from HLTV.
+- [1st execution](/RESULTS1.md)
+- [2nd execution](/RESULTS2.md) with an improvement on how to fetch articles from HLTV.
+- [3rd execution](/RESULTS3.md) replacing 9Pandas with GamerLegion.
+
+## Accuracy
+
+### First Execution
+
+Challengers teams classified to the next stage: **75%**
+
+Legends teams classified to the next stage: **62,5%**
+
+Playoffs predicted correctly: **42,9%**
+
+Winner predicted correctly? **No**
+
+### Second Execution
+
+Challengers teams classified to the next stage: **62,5%**
+
+Legends teams classified to the next stage: **75%**
+
+Playoffs predicted correctly: **42,9%**
+
+Winner predicted correctly? **No**
+
+### Third Execution
+
+Challengers teams classified to the next stage: **62,5%**
+
+Legends teams classified to the next stage: **87,5%**
+
+Playoffs predicted correctly: **28,6%**
+
+Winner predicted correctly? **No**
 
 ## Additional features added from the fork
 
